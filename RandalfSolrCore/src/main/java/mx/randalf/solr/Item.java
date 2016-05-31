@@ -6,7 +6,6 @@ package mx.randalf.solr;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
@@ -92,7 +91,13 @@ public class Item {
 				if (!field.equals("_rootDesc__show")){
 					if (values!= null){
 						for(int y=0; y<values.size(); y++){
-							params.add(field2, values.get(y));
+							if (params.getParams().get(field2)==null){
+								params.add(field2, values.get(y));
+							} else {
+								if (!((Vector<Object>)params.getParams().get(field2)).contains(values.get(y))){
+									params.add(field2, values.get(y));
+								}
+							}
 						}
 					} else {
 						System.out.println("EEEEE: "+field);

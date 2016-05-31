@@ -47,6 +47,11 @@
 			<artifactId>jaxb-impl</artifactId>
 			<version>2.2.11</version>
 		</dependency>
+		<dependency>
+			<groupId>mx.randalf.quartz</groupId>
+			<artifactId>RandalfQuartzCore</artifactId>
+			<version>1.0.1</version>
+		</dependency>
 	</dependencies>
 <!--
 	<distributionManagement>
