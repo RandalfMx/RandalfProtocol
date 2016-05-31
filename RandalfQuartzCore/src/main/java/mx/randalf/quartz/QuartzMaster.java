@@ -37,11 +37,23 @@ public class QuartzMaster {
 	 * 
 	 */
 	public QuartzMaster(boolean startScheduler) throws SchedulerException {
+		this(null, startScheduler);
+	}
 
+	/**
+	 * @throws SchedulerException 
+	 * 
+	 */
+	public QuartzMaster(Scheduler scheduler, boolean startScheduler) throws SchedulerException {
+		StdSchedulerFactory sf = null;
+		
 		listJobs = new Vector<JobKey>();
+		if (scheduler == null){
+			sf = new StdSchedulerFactory();
+			this.scheduler = sf.getScheduler();
+		} 
 		if (startScheduler){
-			scheduler = StdSchedulerFactory.getDefaultScheduler();
-			scheduler.start();
+			this.scheduler.start();
 		}
 	}
 

@@ -44,7 +44,8 @@ public class QuartzTools {
 	}
 
 	public static JobKey startJob(Scheduler scheduler, Class<? extends Job> jClass, 
-			String jobGroup, String jobName, String triggerGroup, String triggerName, Hashtable<String, Object> params,
+			String jobGroup, String jobName, String triggerGroup, String triggerName, 
+			Hashtable<String, Object> params,
 			ScheduleBuilder<?> schedBuilder) 
 			throws SchedulerException{
 		JobDetail job = null;
@@ -136,7 +137,8 @@ public class QuartzTools {
 		return checkJobs(context.getScheduler(), QuartzTools.getName(context), listJobs, nThread, tSleep);
 	}
 
-	public static Vector<JobKey> checkJobs(Scheduler scheduler, String prefix, Vector<JobKey> listJobs, Integer nThread, Integer tSleep){
+	public static Vector<JobKey> checkJobs(Scheduler scheduler, String prefix, 
+			Vector<JobKey> listJobs, Integer nThread, Integer tSleep){
 		int numberThread = 10;
 		int sleep = 5000;
 

@@ -57,10 +57,16 @@
 			<artifactId>xml-apis</artifactId>
 			<version>2.0.2</version>
 		</dependency>
+		<dependency>
+			<groupId>mx.randalf.configuration</groupId>
+			<artifactId>RandalfConfiguration</artifactId>
+			<version>1.0.2</version>
+		</dependency>
 	</dependencies>
 	<parent>
 		<groupId>mx.randalf.protocol</groupId>
 		<artifactId>RandalfProtocol</artifactId>
 		<version>1.0.0</version>
 	</parent>
+	<version>1.0.1</version>
 </project>
