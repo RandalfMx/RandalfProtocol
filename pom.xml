@@ -8,5 +8,6 @@
   	<module>RandalfHibernate</module>
   	<module>RandalfQuartzCore</module>
   	<module>RandalfSolrCore</module>
+  	<module>RandalfCatSan</module>
   </modules>
 </project>
