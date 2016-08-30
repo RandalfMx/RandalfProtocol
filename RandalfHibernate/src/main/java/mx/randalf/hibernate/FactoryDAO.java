@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
+import org.hibernate.MappingException;
 import org.hibernate.Session;
 
 public class FactoryDAO {
@@ -37,6 +38,13 @@ public class FactoryDAO {
 	public static boolean beginTransaction()
 			throws NamingException,
 				ConfigurationException {
+		return beginTransaction("hibernate.cfg.xml");
+	}
+
+	public static boolean beginTransaction(String fHibernate)
+			throws NamingException,
+				ConfigurationException {
+		fileHibernate = fHibernate;
 		boolean autoTransaction = false;
 		String message = "";
 		try {
@@ -137,9 +145,33 @@ public class FactoryDAO {
 		}
 	}
 
+	/**
+	 * Metodo utilizzato per eseguire l'inizializzazione degli oggetti presenti all'interno di un risultato di una ricerca che si
+	 * riferiscono ad una tabella diversa da quella presa in analisi
+	 * 
+	 * @param entity Oggetto da inizializzare
+	 * @throws NamingException
+	 * @throws ConfigurationException
+	 */
 	public static void initialize(Object entity)
 		throws NamingException,
 			ConfigurationException {
+		initialize(entity, "hibernate.cfg.xml");
+	}
+
+	/**
+	 * Metodo utilizzato per eseguire l'inizializzazione degli oggetti presenti all'interno di un risultato di una ricerca che si
+	 * riferiscono ad una tabella diversa da quella presa in analisi
+	 * 
+	 * @param entity Oggetto da inizializzare
+	 * @param fHibernate file di configurazione Hibernate da utilizzare (defalt "hibernate.cfg.xml")
+	 * @throws NamingException
+	 * @throws ConfigurationException
+	 */
+	public static void initialize(Object entity, String fHibernate)
+		throws NamingException,
+			ConfigurationException {
+		fileHibernate = fHibernate;
 		// Per evitare l'errore "Illegally attempted to associate a proxy..."
 		synchronized (syncObject) {
 			boolean isSessionOpened;
@@ -153,7 +185,11 @@ public class FactoryDAO {
 						session = HibernateUtil.getInstance(fileHibernate, null)
 								.getSession();
 						try {
-							session.lock(entity, LockMode.NONE);
+							try{
+								session.lock(entity, LockMode.NONE);
+							} catch (MappingException e){
+								session.persist(entity);
+							}
 							Hibernate.initialize(entity);
 						}catch (HibernateException e){
 							log.error(e.getMessage(), e);

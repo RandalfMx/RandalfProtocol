@@ -368,4 +368,8 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable>
 		result = DigestUtils.md5Hex(key);
 		return result;
 	}
+
+	public String getFileHibernate() {
+		return fileHibernate;
+	}
 }
