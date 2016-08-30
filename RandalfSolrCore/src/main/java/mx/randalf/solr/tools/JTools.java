@@ -12,7 +12,6 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocumentList;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -147,14 +146,32 @@ public abstract class JTools implements Job {
 		return jobKey;
 	}
 
+	/**
+	 * 
+	 * @param qr
+	 * @param pos
+	 * @return
+	 * @deprecated
+	 */
 	public static String toXML(QueryResponse qr, int pos){
-		String xml = null;
-		
-		xml = ClientUtils.toXML(ClientUtils.toSolrInputDocument(qr.getResults().get(pos)));
-		return xml;
+//		String xml = null;
+//		SolrInputDocument sid = null;
+//		sid = new SolrInputDocument (qr.getResults().get(pos).getFieldValuesMap());
+//		
+//		xml = ClientUtils.toXML(ClientUtils.toSolrInputDocument(qr.getResults().get(pos)));
+//		return xml;
+		return null;
 	}
 
+	/**
+	 * 
+	 * @param qr
+	 * @param pos
+	 * @param output
+	 * @throws IOException
+	 * @deprecated
+	 */
 	public static void writeXML(QueryResponse qr, int pos, Writer output) throws IOException{
-		ClientUtils.writeXML(ClientUtils.toSolrInputDocument(qr.getResults().get(pos)), output);
+//		ClientUtils.writeXML(ClientUtils.toSolrInputDocument(qr.getResults().get(pos)), output);
 	}
 }
