@@ -114,6 +114,7 @@ public abstract class AddDocument extends FindDocument {
 		}
 		return null;
 	}
+
 	private SolrInputDocument initItem(String id,
 			Hashtable<String, List<Object>> params,
 			Item items) {
