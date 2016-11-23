@@ -3,7 +3,7 @@
   <parent>
     <groupId>mx.randalf.protocol</groupId>
     <artifactId>RandalfProtocol</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
   </parent>
   <groupId>mx.randalf.protocol.catSan</groupId>
   <artifactId>RandalfCatSan</artifactId>

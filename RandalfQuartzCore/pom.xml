@@ -62,11 +62,16 @@
 			<artifactId>RandalfConfiguration</artifactId>
 			<version>1.0.2</version>
 		</dependency>
+		<dependency>
+			<groupId>mx.randalf.socket</groupId>
+			<artifactId>RandalfSocket</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 	<parent>
 		<groupId>mx.randalf.protocol</groupId>
 		<artifactId>RandalfProtocol</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.1</version>
 	</parent>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 </project>

@@ -2,12 +2,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>mx.randalf.protocol</groupId>
   <artifactId>RandalfProtocol</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <packaging>pom</packaging>
   <modules>
   	<module>RandalfHibernate</module>
   	<module>RandalfQuartzCore</module>
   	<module>RandalfSolrCore</module>
   	<module>RandalfCatSan</module>
+  	<module>RandalfHibernateSpring</module>
+  	<module>RandalfAmazonS3</module>
   </modules>
 </project>

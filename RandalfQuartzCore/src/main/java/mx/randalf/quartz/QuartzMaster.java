@@ -3,12 +3,18 @@
  */
 package mx.randalf.quartz;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
+import org.quartz.JobExecutionContext;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.Trigger;
+import org.quartz.Trigger.TriggerState;
+import org.quartz.TriggerListener;
 import org.quartz.impl.StdSchedulerFactory;
 
 /**
@@ -27,6 +33,10 @@ public class QuartzMaster {
 
 	private Integer tSleepClosed = 60000;
 
+	private QuartzSocket socketClosed = null;
+	
+	private boolean shutdown = false;
+
 	/**
 	 * Variabile utilizzata per la gestione della schedurlazione delle attività
 	 */
@@ -36,24 +46,90 @@ public class QuartzMaster {
 	 * @throws SchedulerException 
 	 * 
 	 */
-	public QuartzMaster(boolean startScheduler) throws SchedulerException {
-		this(null, startScheduler);
+	public QuartzMaster(boolean processing) throws SchedulerException {
+		this(null, processing, null, null, false, false);
 	}
 
 	/**
 	 * @throws SchedulerException 
 	 * 
 	 */
-	public QuartzMaster(Scheduler scheduler, boolean startScheduler) throws SchedulerException {
+	public QuartzMaster(boolean processing, String fileQuartz) 
+				throws SchedulerException {
+		this(null, processing, fileQuartz, null, false, false);
+	}
+
+	/**
+	 * @throws SchedulerException 
+	 * 
+	 */
+	public QuartzMaster(boolean processing, String fileQuartz, 
+			Integer socketPort, boolean closeSocket, boolean reScheduling) throws SchedulerException {
+		this(null, processing, fileQuartz, socketPort, closeSocket, reScheduling);
+	}
+	
+	/**
+	 * @throws SchedulerException 
+	 * 
+	 */
+	public QuartzMaster(Scheduler scheduler, boolean processing, 
+			String fileQuartz, Integer socketPort, boolean closeSocket, boolean reScheduling) throws SchedulerException {
 		StdSchedulerFactory sf = null;
 		
 		listJobs = new Vector<JobKey>();
-		if (scheduler == null){
-			sf = new StdSchedulerFactory();
-			this.scheduler = sf.getScheduler();
-		} 
-		if (startScheduler){
-			this.scheduler.start();
+		if (!closeSocket){
+			if (scheduler == null){
+				if (fileQuartz != null){
+					sf = new StdSchedulerFactory(fileQuartz);
+				} else {
+					sf = new StdSchedulerFactory();
+				}
+				this.scheduler = sf.getScheduler();
+				this.scheduler.getListenerManager().addTriggerListener(new TriggerListener(){
+
+				    private Date lastFireTime = null;
+
+				    @Override
+				    public String getName() {
+				        return "prevent-duplicate-fires";
+				    }
+
+				    @Override
+				    public void triggerFired(Trigger trigger, JobExecutionContext context) {
+				    }
+
+				    @Override
+				    public boolean vetoJobExecution(Trigger trigger, JobExecutionContext context) {
+				        final Date fireTime = context.getScheduledFireTime();
+				        if (lastFireTime != null && fireTime.equals(lastFireTime)) {
+				            return true;
+				        }
+				        lastFireTime = fireTime;
+				        return false;
+				    }
+
+				    @Override
+				    public void triggerMisfired(Trigger trigger) {
+				    }
+
+				    @Override
+				    public void triggerComplete(Trigger trigger, JobExecutionContext context, Trigger.CompletedExecutionInstruction triggerInstructionCode) {
+				    }
+				});
+
+			} else {
+				this.scheduler = scheduler;
+			}
+			if (processing){
+				this.scheduler.start();
+			}
+		}
+		
+		if (socketPort != null && !closeSocket && !reScheduling){
+			socketClosed = new QuartzSocket(this, socketPort);
+			socketClosed.start();
+		} else if (socketPort != null && closeSocket && !reScheduling){
+			socketClosed = new QuartzSocket(socketPort);
 		}
 	}
 
@@ -100,5 +176,38 @@ public class QuartzMaster {
 	 */
 	public void setScheduler(Scheduler scheduler) {
 		this.scheduler = scheduler;
+	}
+
+	public void shutdown() throws SchedulerException{
+		shutdown = true;
+		this.scheduler.shutdown(true);
+	}
+
+	public boolean isShutdown(){
+		return shutdown;
+	}
+
+	public TriggerState getStatoJob(String jobGroup, String jobName) throws SchedulerException{
+		List<? extends Trigger> triggers = null;
+		JobKey jobKey = null;
+		TriggerState triggerState = null;
+
+		try {
+			jobKey = new JobKey(jobName, jobGroup);
+			if (this.scheduler.checkExists(jobKey)){
+				triggers = this.scheduler.getTriggersOfJob(jobKey);
+				if (triggers != null){
+					for (Trigger trigger : triggers){
+						triggerState = this.scheduler.getTriggerState(trigger.getKey());
+						if (triggerState != null){
+							break;
+						}
+					}
+				}
+			}
+		} catch (SchedulerException e) {
+			throw e;
+		}
+		return triggerState;
 	}
 }
