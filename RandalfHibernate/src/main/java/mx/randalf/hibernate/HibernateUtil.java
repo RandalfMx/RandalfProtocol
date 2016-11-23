@@ -3,7 +3,6 @@
  */
 package mx.randalf.hibernate;
 
-
 import java.io.File;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -12,6 +11,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import mx.randalf.configuration.exception.ConfigurationException;
+import mx.randalf.hibernate.exception.HibernateUtilException;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
@@ -19,7 +19,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-import org.springframework.orm.hibernate3.HibernateTemplate;
 
 /**
  * @author massi
@@ -37,9 +36,8 @@ public class HibernateUtil {
 
 	private static Hashtable<String, HibernateUtil> instance = null;
 
-	private HibernateUtil(String fileHibernate,
-			HibernateTemplate hibernateTemplate) throws ConfigurationException // throws
-																				// NamingException
+	@SuppressWarnings("deprecation")
+	private HibernateUtil(String fileHibernate) throws HibernateException, HibernateUtilException
 	{
 		Hashtable<?, ?> lists = null;
 		Enumeration<?> keys = null;
@@ -48,15 +46,19 @@ public class HibernateUtil {
 		InitialContext ctx;
 		File f = null;
 		f = new File(fileHibernate);
+		if (!f.exists()) {
+			if (HibernateUtil.class.getResource("/" + f.getName()) != null) {
+				f = new File(HibernateUtil.class.getResource("/" + f.getName()).getFile());
+			}
+		}
 		org.hibernate.cfg.Configuration conf = null;
-		// try {
-		if (hibernateTemplate == null) {
+		try {
 			try {
 				conf = new org.hibernate.cfg.Configuration();
-				configuration =conf.configure(f);
+				configuration = conf.configure(f);
 				sessionFactory = configuration.buildSessionFactory();
 			} catch (HibernateException e) {
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 			}
 			if (sessionFactory == null) {
 				try {
@@ -68,48 +70,34 @@ public class HibernateUtil {
 						key = keys.nextElement();
 						log.debug(key + ": " + lists.get(key));
 					}
-					if (mx.randalf.configuration.Configuration
-							.getValue("dataSource") != null) {
-						sessionFactory = (SessionFactory) ctx.lookup("java:"
-								+ mx.randalf.configuration.Configuration
-										.getValue("dataSource"));
-					} else {
+					if (mx.randalf.configuration.Configuration.getValue("dataSource") != null) {
 						sessionFactory = (SessionFactory) ctx
-								.lookup("java:/hibernate/GEA5/SF");
+								.lookup("java:" + mx.randalf.configuration.Configuration.getValue("dataSource"));
+					} else {
+						sessionFactory = (SessionFactory) ctx.lookup("java:/hibernate/GEA5/SF");
 					}
 				} catch (NamingException e) {
 					log.error(e.getMessage(), e);
-					throw new ConfigurationException(e.getMessage(), e);
+					throw new HibernateUtilException(e.getMessage(), e);
 				} catch (ConfigurationException e) {
 					log.error(e.getMessage(), e);
-					throw e;
+					throw new HibernateUtilException(e.getMessage(), e);
 				} catch (Exception e) {
 					log.error(e.getMessage(), e);
-					throw new ConfigurationException(e.getMessage(), e);
+					throw new HibernateUtilException(e.getMessage(), e);
 				}
 				if (sessionFactory == null) {
-					sessionFactory = new Configuration().configure()
-							.buildSessionFactory();
+					sessionFactory = new Configuration().configure().buildSessionFactory();
 					if (sessionFactory == null) {
-						sessionFactory = new Configuration().configure(f)
-								.buildSessionFactory();
+						sessionFactory = new Configuration().configure(f).buildSessionFactory();
 					}
 				}
 			}
-		} else {
-			sessionFactory = hibernateTemplate.getSessionFactory();
+		} catch (HibernateException e) {
+			throw e;
+		} catch (HibernateUtilException e) {
+			throw e;
 		}
-		// } catch (NoInitialContextException e){
-		// sessionFactory = new
-		// Configuration().configure().buildSessionFactory();
-		// if (sessionFactory == null){
-		// sessionFactory = new
-		// Configuration().configure(f).buildSessionFactory();
-		// }
-		// } catch (NamingException e) {
-		// log.error(e.getMessage(),e);
-		// throw e;
-		// }
 	}
 
 	public boolean isSessionOpened() {
@@ -207,8 +195,7 @@ public class HibernateUtil {
 			session = sessionTable.get();
 			if (session == null) {
 				try {
-					session = getSessionFactory()
-							.openSession();
+					session = getSessionFactory().openSession();
 					sessionTable.set(session);
 				} catch (HibernateException e) {
 					e.printStackTrace();
@@ -232,9 +219,13 @@ public class HibernateUtil {
 		synchronized (SyncObj) {
 			session = sessionTable.get();
 			if (session != null) {
-				if (session.isOpen())
-					session.close();
 
+				if (session.isConnected()){
+					session.disconnect();
+				}
+				if (session.isOpen()){
+					session.close();
+				}
 				sessionTable.remove();
 			}
 		}
@@ -250,24 +241,19 @@ public class HibernateUtil {
 		return count;
 	}
 
-	// static
-	// {
-	// try {
-	// instance = new HibernateUtil();
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-	// }
-
-	public static HibernateUtil getInstance(String fileHibernate,
-			HibernateTemplate hibernateTemplate) throws NamingException,
-			ConfigurationException {
-		if (instance == null) {
-			instance = new Hashtable<String, HibernateUtil>();
-		}
-		if (instance.get(fileHibernate) == null) {
-			instance.put(fileHibernate, new HibernateUtil(fileHibernate,
-					hibernateTemplate));
+	public static HibernateUtil getInstance(String fileHibernate) throws HibernateException, HibernateUtilException
+	{
+		try {
+			if (instance == null) {
+				instance = new Hashtable<String, HibernateUtil>();
+			}
+			if (instance.get(fileHibernate) == null) {
+				instance.put(fileHibernate, new HibernateUtil(fileHibernate));
+			}
+		} catch (HibernateException e) {
+			throw e;
+		} catch (HibernateUtilException e) {
+			throw e;
 		}
 		return instance.get(fileHibernate);
 	}

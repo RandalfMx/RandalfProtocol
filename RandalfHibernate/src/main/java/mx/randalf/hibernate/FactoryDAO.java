@@ -5,7 +5,8 @@ import java.util.UUID;
 
 import javax.naming.NamingException;
 
-import mx.randalf.configuration.exception.ConfigurationException;
+//import mx.randalf.configuration.exception.ConfigurationException;
+import mx.randalf.hibernate.exception.HibernateUtilException;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
@@ -25,25 +26,27 @@ public class FactoryDAO {
 		return UUID.randomUUID().toString().toUpperCase();
 	}
 
-	public static boolean checkConnection() throws Exception {
+	public static boolean checkConnection() throws HibernateException, HibernateUtilException {
 		try {
-			HibernateUtil.getInstance(fileHibernate, null).getSession();
+			HibernateUtil.getInstance(fileHibernate).getSession();
+		} catch (HibernateException e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		} catch (HibernateUtilException e) {
+			log.error(e.getMessage(), e);
+			throw e;
 		} catch (Exception ex) {
 			log.error(ex.getMessage(), ex);
-			throw ex;
+			throw new HibernateUtilException(ex.getMessage(), ex);
 		}
 		return true;
 	}
 
-	public static boolean beginTransaction()
-			throws NamingException,
-				ConfigurationException {
+	public static boolean beginTransaction() throws HibernateException, HibernateUtilException {
 		return beginTransaction("hibernate.cfg.xml");
 	}
 
-	public static boolean beginTransaction(String fHibernate)
-			throws NamingException,
-				ConfigurationException {
+	public static boolean beginTransaction(String fHibernate) throws HibernateException, HibernateUtilException {
 		fileHibernate = fHibernate;
 		boolean autoTransaction = false;
 		String message = "";
@@ -51,44 +54,47 @@ public class FactoryDAO {
 			log.debug("Begin of beginTransaction");
 			synchronized (syncTransObj) {
 				autoTransaction = HibernateUtil
-						.getInstance(fileHibernate, null).isAutoTransaction();
+						.getInstance(fileHibernate).isAutoTransaction();
 				if (autoTransaction) {
 					message = "Creating a new transaction: ";
-					HibernateUtil.getInstance(fileHibernate, null)
+					HibernateUtil.getInstance(fileHibernate)
 							.beginTransaction();
 				} else
 					message = "Using existing transaction: ";
 				message = message
-						+ HibernateUtil.getInstance(fileHibernate, null)
+						+ HibernateUtil.getInstance(fileHibernate)
 								.getCurrentTransaction().hashCode();
 			}
 			log.info(message);
-		} catch (NamingException e) {
+		} catch (HibernateException e) {
 			log.error(e.getMessage(), e);
 			throw e;
-		} catch (ConfigurationException e) {
+		} catch (HibernateUtilException e) {
 			log.error(e.getMessage(), e);
 			throw e;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new HibernateUtilException(e.getMessage(), e);
 		} finally {
 			log.debug("End of beginTransaction");
 		}
 		return autoTransaction;
 	}
 
-	public static void commitTransaction(boolean autoTransaction)
-			throws NamingException, ConfigurationException {
+	public static void commitTransaction(boolean autoTransaction) 
+			throws HibernateException, HibernateUtilException {
 		String message = "";
 		try {
 			log.debug("Begin of commitTransaction");
 			synchronized (syncTransObj) {
-				if (HibernateUtil.getInstance(fileHibernate, null)
+				if (HibernateUtil.getInstance(fileHibernate)
 						.getCurrentTransaction() != null) {
 					message = ""
-							+ HibernateUtil.getInstance(fileHibernate, null)
+							+ HibernateUtil.getInstance(fileHibernate)
 									.getCurrentTransaction().hashCode();
 					if (autoTransaction) {
 						message = "Committing a transaction: " + message;
-						HibernateUtil.getInstance(fileHibernate, null)
+						HibernateUtil.getInstance(fileHibernate)
 								.commitTransaction();
 					} else {
 						message = "No commit needed for transaction: "
@@ -99,31 +105,34 @@ public class FactoryDAO {
 				}
 			}
 			log.info(message);
-		} catch (NamingException e) {
+		} catch (HibernateException e) {
 			log.error(e.getMessage(), e);
 			throw e;
-		} catch (ConfigurationException e) {
+		} catch (HibernateUtilException e) {
 			log.error(e.getMessage(), e);
 			throw e;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new HibernateUtilException(e.getMessage(), e);
 		} finally {
 			log.debug("End of commitTransaction");
 		}
 	}
 
 	public static void rollbackTransaction(boolean autoTransaction)
-			throws NamingException, ConfigurationException {
+			throws HibernateException, HibernateUtilException {
 		String message = "";
 		try {
 			log.debug("Begin of rollbackTransaction");
 			synchronized (syncTransObj) {
-				if (HibernateUtil.getInstance(fileHibernate, null)
+				if (HibernateUtil.getInstance(fileHibernate)
 						.getCurrentTransaction() != null) {
 					message = ""
-							+ HibernateUtil.getInstance(fileHibernate, null)
+							+ HibernateUtil.getInstance(fileHibernate)
 									.getCurrentTransaction().hashCode();
 					if (autoTransaction) {
 						message = "Rollingback a transaction: " + message;
-						HibernateUtil.getInstance(fileHibernate, null)
+						HibernateUtil.getInstance(fileHibernate)
 								.rollbackTransaction();
 					} else {
 						message = "No rollback needed for transaction: "
@@ -134,12 +143,15 @@ public class FactoryDAO {
 				}
 			}
 			log.info(message);
-		} catch (NamingException e) {
+		} catch (HibernateException e) {
 			log.error(e.getMessage(), e);
 			throw e;
-		} catch (ConfigurationException e) {
+		} catch (HibernateUtilException e) {
 			log.error(e.getMessage(), e);
 			throw e;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new HibernateUtilException(e.getMessage(), e);
 		} finally {
 			log.debug("End of rollbackTransaction");
 		}
@@ -151,11 +163,9 @@ public class FactoryDAO {
 	 * 
 	 * @param entity Oggetto da inizializzare
 	 * @throws NamingException
-	 * @throws ConfigurationException
 	 */
 	public static void initialize(Object entity)
-		throws NamingException,
-			ConfigurationException {
+			throws HibernateException, HibernateUtilException {
 		initialize(entity, "hibernate.cfg.xml");
 	}
 
@@ -166,11 +176,10 @@ public class FactoryDAO {
 	 * @param entity Oggetto da inizializzare
 	 * @param fHibernate file di configurazione Hibernate da utilizzare (defalt "hibernate.cfg.xml")
 	 * @throws NamingException
-	 * @throws ConfigurationException
 	 */
+	@SuppressWarnings("deprecation")
 	public static void initialize(Object entity, String fHibernate)
-		throws NamingException,
-			ConfigurationException {
+			throws HibernateException, HibernateUtilException {
 		fileHibernate = fHibernate;
 		// Per evitare l'errore "Illegally attempted to associate a proxy..."
 		synchronized (syncObject) {
@@ -181,8 +190,8 @@ public class FactoryDAO {
 				if (entity != null) {
 					if (!Hibernate.isInitialized(entity)) {
 						isSessionOpened = HibernateUtil.getInstance(
-								fileHibernate, null).isSessionOpened();
-						session = HibernateUtil.getInstance(fileHibernate, null)
+								fileHibernate).isSessionOpened();
+						session = HibernateUtil.getInstance(fileHibernate)
 								.getSession();
 						try {
 							try{
@@ -196,18 +205,21 @@ public class FactoryDAO {
 							throw e;
 						} finally {
 							if (!isSessionOpened) {
-								HibernateUtil.getInstance(fileHibernate, null)
+								HibernateUtil.getInstance(fileHibernate)
 										.closeSession();
 							}
 						}
 					}
 				}
-			} catch (NamingException e) {
+			} catch (HibernateException e) {
 				log.error(e.getMessage(), e);
 				throw e;
-			} catch (ConfigurationException e) {
+			} catch (HibernateUtilException e) {
 				log.error(e.getMessage(), e);
 				throw e;
+			} catch (Exception e) {
+				log.error(e.getMessage(), e);
+				throw new HibernateUtilException(e.getMessage(), e);
 			}
 		}
 	}

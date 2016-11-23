@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>mx.randalf.hibernate</groupId>
 	<artifactId>RandalfHibernate</artifactId>
-	<version>1.0.6</version>
+	<version>1.0.7</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.6</maven.compiler.source>
-		<maven.compiler.target>1.6</maven.compiler.target>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -25,15 +25,22 @@
 			<artifactId>jta</artifactId>
 			<version>1.1</version>
 		</dependency>
+		<!-- 
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-hibernate3</artifactId>
 			<version>2.0.8</version>
 		</dependency>
+		 -->
 		<dependency>
 			<groupId>javax.persistence</groupId>
 			<artifactId>persistence-api</artifactId>
 			<version>1.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>4.0.0.Final</version>
 		</dependency>
 	</dependencies>
 <!--
@@ -74,6 +81,6 @@
   <parent>
   	<groupId>mx.randalf.protocol</groupId>
   	<artifactId>RandalfProtocol</artifactId>
-  	<version>1.0.0</version>
+  	<version>1.0.1</version>
   </parent>
 </project>
