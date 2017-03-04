@@ -49,6 +49,9 @@ public class HibernateUtil {
 		if (!f.exists()) {
 			if (HibernateUtil.class.getResource("/" + f.getName()) != null) {
 				f = new File(HibernateUtil.class.getResource("/" + f.getName()).getFile());
+				if (!f.exists()){
+					f = new File(f.getAbsolutePath().replace("%23", "#"));
+				}
 			}
 		}
 		org.hibernate.cfg.Configuration conf = null;
