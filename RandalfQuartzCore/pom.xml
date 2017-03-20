@@ -73,5 +73,5 @@
 		<artifactId>RandalfProtocol</artifactId>
 		<version>1.0.1</version>
 	</parent>
-	<version>1.0.3</version>
+	<version>1.0.4</version>
 </project>

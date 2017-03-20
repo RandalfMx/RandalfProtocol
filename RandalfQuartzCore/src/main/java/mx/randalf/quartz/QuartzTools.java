@@ -48,6 +48,14 @@ public class QuartzTools {
 			Hashtable<String, Object> params,
 			ScheduleBuilder<?> schedBuilder) 
 			throws SchedulerException{
+		return startJob(scheduler, jClass, jobGroup, jobName, triggerGroup, triggerName, params, null, null);
+	}
+
+	public static JobKey startJob(Scheduler scheduler, Class<? extends Job> jClass, 
+			String jobGroup, String jobName, String triggerGroup, String triggerName, 
+			Hashtable<String, Object> params,
+			ScheduleBuilder<?> schedBuilder, Integer priority) 
+			throws SchedulerException{
 		JobDetail job = null;
 		Trigger trigger = null;
 		Set<Trigger> triggers = null;
@@ -69,17 +77,33 @@ public class QuartzTools {
 			}
 
 			if (schedBuilder != null){
-				trigger = newTrigger()
-						.withIdentity(triggerName, triggerGroup)
-						.withSchedule(schedBuilder)
-						.startNow()
-						.build();
+				if (priority != null){
+					trigger = newTrigger()
+							.withIdentity(triggerName, triggerGroup)
+							.withSchedule(schedBuilder)
+							.withPriority(priority)
+							.startNow()
+							.build();
+				} else {
+					trigger = newTrigger()
+							.withIdentity(triggerName, triggerGroup)
+							.withSchedule(schedBuilder)
+							.startNow()
+							.build();
+				}
 			} else {
-				trigger = newTrigger()
-						.withIdentity(triggerName, triggerGroup)
-						.startNow()
-						.build();
-				
+				if (priority != null){
+					trigger = newTrigger()
+							.withIdentity(triggerName, triggerGroup)
+							.withPriority(priority)
+							.startNow()
+							.build();
+				} else {
+					trigger = newTrigger()
+							.withIdentity(triggerName, triggerGroup)
+							.startNow()
+							.build();
+				}
 			}
 			triggers = new HashSet<Trigger>();
 			triggers.add(trigger);
