@@ -51,6 +51,9 @@ public class HibernateUtil {
 				f = new File(HibernateUtil.class.getResource("/" + f.getName()).getFile());
 				if (!f.exists()){
 					f = new File(f.getAbsolutePath().replace("%23", "#"));
+					if (!f.exists()){
+						f = new File(f.getAbsolutePath().replace("%20", " "));
+					}
 				}
 			}
 		}
