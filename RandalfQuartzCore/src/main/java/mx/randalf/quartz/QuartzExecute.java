@@ -8,7 +8,6 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 import org.apache.log4j.Logger;
-import org.quartz.Job;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -16,6 +15,7 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import mx.randalf.configuration.Configuration;
 import mx.randalf.configuration.exception.ConfigurationException;
+import mx.randalf.quartz.job.JobExecute;
 
 /**
  * @author massi
@@ -92,7 +92,7 @@ public abstract class QuartzExecute{
 		return result;
 	}
 
-	protected JobKey start(Class<? extends Job> jClass, 
+	protected JobKey start(Class<? extends JobExecute> jClass, 
 			String jobGroup, String jobName, String triggerGroup, String triggerName, Hashtable<String, Object> params) 
 			throws SchedulerException{
 		JobKey jobKey = null;

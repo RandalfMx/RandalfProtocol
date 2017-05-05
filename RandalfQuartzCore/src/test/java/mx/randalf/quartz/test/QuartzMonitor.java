@@ -123,7 +123,6 @@ public class QuartzMonitor extends QuartzMaster {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void monitorJobGroupNames(String prefix, String titolo, List<String> jobGroupNames) throws SchedulerException {
 		GroupMatcher<JobKey> groupMatcher = null;
 
@@ -144,26 +143,26 @@ public class QuartzMonitor extends QuartzMaster {
 		}
 	}
 
-	private void monitor(String prefix, List<Trigger> triggers) {
-		prefix += "\t";
-		
-		for (Trigger trigger : triggers){
-			monitor(prefix, "CalendarName",trigger.getCalendarName());
-			monitor(prefix, "Description",trigger.getDescription());
-			monitor(prefix, "EndTime",trigger.getEndTime());
-			monitor(prefix, "FinalFireTime",trigger.getFinalFireTime());
-			monitor(prefix, "JobData",trigger.getJobDataMap());
-			monitor(prefix, "JobKey",trigger.getJobKey());
-			monitor(prefix, "Key",trigger.getKey());
-			monitor(prefix, "MisfireInstruction",trigger.getMisfireInstruction());
-			monitor(prefix, "NextFireTime",trigger.getNextFireTime());
-			monitor(prefix, "PreviousFireTime",trigger.getPreviousFireTime());
-			monitor(prefix, "Priority",trigger.getPriority());
-			monitor(prefix, "ScheduleBuilder",trigger.getScheduleBuilder());
-			monitor(prefix, "StartTime",trigger.getStartTime());
-			monitor(prefix, "TriggerBuilder",trigger.getTriggerBuilder());
-		}
-	}
+//	private void monitor(String prefix, List<Trigger> triggers) {
+//		prefix += "\t";
+//		
+//		for (Trigger trigger : triggers){
+//			monitor(prefix, "CalendarName",trigger.getCalendarName());
+//			monitor(prefix, "Description",trigger.getDescription());
+//			monitor(prefix, "EndTime",trigger.getEndTime());
+//			monitor(prefix, "FinalFireTime",trigger.getFinalFireTime());
+//			monitor(prefix, "JobData",trigger.getJobDataMap());
+//			monitor(prefix, "JobKey",trigger.getJobKey());
+//			monitor(prefix, "Key",trigger.getKey());
+//			monitor(prefix, "MisfireInstruction",trigger.getMisfireInstruction());
+//			monitor(prefix, "NextFireTime",trigger.getNextFireTime());
+//			monitor(prefix, "PreviousFireTime",trigger.getPreviousFireTime());
+//			monitor(prefix, "Priority",trigger.getPriority());
+//			monitor(prefix, "ScheduleBuilder",trigger.getScheduleBuilder());
+//			monitor(prefix, "StartTime",trigger.getStartTime());
+//			monitor(prefix, "TriggerBuilder",trigger.getTriggerBuilder());
+//		}
+//	}
 
 	private void monitor(String prefix, String titolo, List<JobExecutionContext> currentlyExecutingJobs) {
 		System.out.println(prefix+titolo+":");

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>mx.randalf.solr</groupId>
 	<artifactId>RandalfSolrCore</artifactId>
-	<version>1.0.16</version>
+	<version>1.0.17</version>
 	<description>Librerie per la gestione del Core di accesso verso Solr</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -50,7 +50,7 @@
 		<dependency>
 			<groupId>mx.randalf.quartz</groupId>
 			<artifactId>RandalfQuartzCore</artifactId>
-			<version>1.0.5</version>
+			<version>1.0.6</version>
 		</dependency>
 	</dependencies>
 <!--

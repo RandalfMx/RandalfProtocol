@@ -4,8 +4,8 @@
 package mx.randalf.quartz;
 
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.List;
-import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.quartz.JobExecutionContext;
@@ -23,13 +23,13 @@ import org.quartz.impl.StdSchedulerFactory;
  */
 public class QuartzMaster {
 	
-	private Vector<JobKey> listJobs = null;
+	private Hashtable<String, JobKey> listJobs = null;
 
 	private static Logger log = Logger.getLogger(QuartzMaster.class);
 
-	private Integer nThread = 10;
-
-	private Integer tSleep = 1000;
+//	private Integer nThread = 10;
+//
+//	private Integer tSleep = 1000;
 
 	private Integer tSleepClosed = 60000;
 
@@ -76,7 +76,7 @@ public class QuartzMaster {
 			String fileQuartz, Integer socketPort, boolean closeSocket, boolean reScheduling) throws SchedulerException {
 		StdSchedulerFactory sf = null;
 		
-		listJobs = new Vector<JobKey>();
+		listJobs = new Hashtable<String, JobKey>();
 		if (!closeSocket){
 			if (scheduler == null){
 				if (fileQuartz != null){
@@ -135,8 +135,14 @@ public class QuartzMaster {
 
 	public void closed(boolean shutdown) throws SchedulerException{
 		try {
+			try {
+				Thread.sleep(tSleepClosed*10);
+			} catch (InterruptedException e) {
+				log.error(e.getMessage(), e);
+			}
 			while (true) {
 				if (!QuartzTools.checkExecute(scheduler, listJobs)) {
+					System.out.println("FINEEEE");
 					break;
 				}
 				try {
@@ -155,17 +161,18 @@ public class QuartzMaster {
 	}
 
 	public void add(String prefix, JobKey jobKey) {
-		listJobs = QuartzTools.checkJobs(scheduler, prefix, listJobs, nThread, tSleep);
-		listJobs.add(jobKey);
+//		listJobs = QuartzTools.checkJobs(scheduler, prefix, listJobs, nThread, tSleep);
+		System.out.println("ADD: "+jobKey);
+		listJobs.put(jobKey.getGroup()+"-"+jobKey.getName(),jobKey);
 	}
 
-	public void setnThread(Integer nThread) {
-		this.nThread = nThread;
-	}
-
-	public void settSleep(Integer tSleep) {
-		this.tSleep = tSleep;
-	}
+//	public void setnThread(Integer nThread) {
+//		this.nThread = nThread;
+//	}
+//
+//	public void settSleep(Integer tSleep) {
+//		this.tSleep = tSleep;
+//	}
 
 	public void settSleepClosed(Integer tSleepClosed) {
 		this.tSleepClosed = tSleepClosed;

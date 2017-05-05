@@ -11,17 +11,20 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 
 import org.apache.log4j.Logger;
-import org.quartz.Job;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobKey;
 import org.quartz.ScheduleBuilder;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
+import org.quartz.Trigger.TriggerState;
+import org.quartz.TriggerKey;
+
+import mx.randalf.quartz.job.JobExecute;
 
 /**
  * @author massi
@@ -37,13 +40,13 @@ public class QuartzTools {
 	public QuartzTools() {
 	}
 
-	public static JobKey startJob(Scheduler scheduler, Class<? extends Job> jClass, 
+	public static JobKey startJob(Scheduler scheduler, Class<? extends JobExecute> jClass, 
 			String jobGroup, String jobName, String triggerGroup, String triggerName, Hashtable<String, Object> params) 
 			throws SchedulerException{
 		return startJob(scheduler, jClass, jobGroup, jobName, triggerGroup, triggerName, params, null);
 	}
 
-	public static JobKey startJob(Scheduler scheduler, Class<? extends Job> jClass, 
+	public static JobKey startJob(Scheduler scheduler, Class<? extends JobExecute> jClass, 
 			String jobGroup, String jobName, String triggerGroup, String triggerName, 
 			Hashtable<String, Object> params,
 			ScheduleBuilder<?> schedBuilder) 
@@ -51,7 +54,7 @@ public class QuartzTools {
 		return startJob(scheduler, jClass, jobGroup, jobName, triggerGroup, triggerName, params, null, null);
 	}
 
-	public static JobKey startJob(Scheduler scheduler, Class<? extends Job> jClass, 
+	public static JobKey startJob(Scheduler scheduler, Class<? extends JobExecute> jClass, 
 			String jobGroup, String jobName, String triggerGroup, String triggerName, 
 			Hashtable<String, Object> params,
 			ScheduleBuilder<?> schedBuilder, Integer priority) 
@@ -65,7 +68,7 @@ public class QuartzTools {
 		try {
 			job = newJob(jClass).
 					withIdentity(jobName, jobGroup)
-					
+//					.storeDurably(true)
 					.build();
 
 			if (params != null){
@@ -97,17 +100,27 @@ public class QuartzTools {
 							.withIdentity(triggerName, triggerGroup)
 							.withPriority(priority)
 							.startNow()
+							.withSchedule(SimpleScheduleBuilder.simpleSchedule()
+							        .withRepeatCount(300)
+							        .withIntervalInMinutes(2))
 							.build();
 				} else {
 					trigger = newTrigger()
 							.withIdentity(triggerName, triggerGroup)
 							.startNow()
+							.withSchedule(SimpleScheduleBuilder.simpleSchedule()
+							        .withRepeatCount(1000)
+							        .withIntervalInSeconds(2))
 							.build();
 				}
 			}
-			triggers = new HashSet<Trigger>();
-			triggers.add(trigger);
-			scheduler.scheduleJob(job, triggers, false);
+
+			checkExistJob(scheduler, job.getKey(), trigger.getKey());
+			if (!scheduler.isShutdown()){
+				triggers = new HashSet<Trigger>();
+				triggers.add(trigger);
+				scheduler.scheduleJob(job, triggers, false);
+			}
 		} catch (SchedulerException e) {
 			log.error(e.getMessage(), e);
 			throw e;
@@ -118,32 +131,67 @@ public class QuartzTools {
 		return job.getKey();
 	}
 
-	public static boolean checkJob(JobExecutionContext context) throws SchedulerException{
-		List<JobExecutionContext> jobs = null;
-		int conta = 0;
-		boolean result = false;
-
+	private static void checkExistJob(Scheduler scheduler, JobKey jobKey, TriggerKey triggerKey) throws SchedulerException {
+		int numJobs = 0;
 		try {
-			if (context.getScheduler().isShutdown()){
-				result = false;
-			} else if (context.getScheduler().isStarted()){
-				jobs = context.getScheduler().getCurrentlyExecutingJobs();
-				if (jobs != null && jobs.size()>0){
-					for(JobExecutionContext job : jobs){
-						if (job.getJobDetail().getKey().getGroup().equals(context.getJobDetail().getKey().getGroup()) &&
-								job.getJobDetail().getKey().getName().equals(context.getJobDetail().getKey().getName()) &&
-								job.getTrigger().getKey().getGroup().equals(context.getTrigger().getKey().getGroup()) &&
-								job.getTrigger().getKey().getName().equals(context.getTrigger().getKey().getName()) ){
-							conta++;
+			while(true){
+				
+				numJobs = checkJob(scheduler, jobKey, triggerKey);
+				if (numJobs == -1){
+					break;
+				} else if (numJobs ==0){
+					if (scheduler.checkExists(jobKey)){
+						if  (!checkTriggers(scheduler, scheduler.getTriggersOfJob(jobKey))){
+							break;
 						}
+					} else {
+						break;
 					}
 				}
-				result = conta<=1;
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					log.error("["+jobKey.getGroup()+" => "+jobKey.getName()+"] "+e.getMessage(), e);
+				}
 			}
 		} catch (SchedulerException e) {
 			throw e;
 		}
-		return result;
+	}
+
+	public static boolean checkJob(JobExecutionContext context) throws SchedulerException{
+		int conta = 0;
+		
+		conta = checkJob(context.getScheduler(), context.getJobDetail().getKey(),
+				context.getTrigger().getKey());
+		return (conta==-1?false:conta<=1);
+	}
+
+	public static int checkJob(Scheduler scheduler, JobKey jobKey, TriggerKey triggerKey) throws SchedulerException{
+		List<JobExecutionContext> jobs = null;
+		int conta = 0;
+
+		try {
+			if (scheduler.isShutdown()){
+				System.out.println("IN SHUTDOWN");
+				conta = -1;
+			} else if (scheduler.isStarted()){
+				jobs = scheduler.getCurrentlyExecutingJobs();
+				if (jobs != null && jobs.size()>0){
+					for(JobExecutionContext job : jobs){
+						if (job.getJobDetail().getKey().getGroup().equals(jobKey.getGroup()) &&
+								job.getJobDetail().getKey().getName().equals(jobKey.getName()) &&
+								job.getTrigger().getKey().getGroup().equals(triggerKey.getGroup()) &&
+								job.getTrigger().getKey().getName().equals(triggerKey.getName()) ){
+							conta++;
+						}
+					}
+				}
+			}
+		} catch (SchedulerException e) {
+			throw e;
+		}
+		return conta;
 	}
 
 	public static String getName(JobExecutionContext context) {
@@ -157,14 +205,16 @@ public class QuartzTools {
 					context.getTrigger().getKey().getName();
 	}
 
-	public static Vector<JobKey> checkJobs(JobExecutionContext context, Vector<JobKey> listJobs, Integer nThread, Integer tSleep){
+	public static Hashtable<String, JobKey> checkJobs(JobExecutionContext context, Hashtable<String, JobKey> listJobs, Integer nThread, Integer tSleep){
 		return checkJobs(context.getScheduler(), QuartzTools.getName(context), listJobs, nThread, tSleep);
 	}
 
-	public static Vector<JobKey> checkJobs(Scheduler scheduler, String prefix, 
-			Vector<JobKey> listJobs, Integer nThread, Integer tSleep){
+	public static Hashtable<String, JobKey> checkJobs(Scheduler scheduler, String prefix, 
+			Hashtable<String,JobKey> listJobs, Integer nThread, Integer tSleep){
 		int numberThread = 10;
 		int sleep = 5000;
+		Enumeration<String> keys = null;
+		String key = null;
 
 		try {
 			if (nThread!=null){
@@ -180,10 +230,14 @@ public class QuartzTools {
 //			log.error("["+QuartzTools.getName(context)+"] "+e.getMessage(), e);
 		}
 		while(true){
-			for (int x=0; x<listJobs.size();x++){
+			keys = listJobs.keys();
+			while(keys.hasMoreElements()){
+				key = keys.nextElement();
 				try {
-					if (!scheduler.checkExists(listJobs.get(x))){
-						listJobs.remove(x);
+					
+					if (!scheduler.checkExists(listJobs.get(key))){
+						System.out.println("Remove: "+key);
+						listJobs.remove(key);
 					}
 				} catch (SchedulerException e) {
 					log.error("["+prefix+"] "+e.getMessage(), e);
@@ -203,30 +257,106 @@ public class QuartzTools {
 		return listJobs;
 	}
 
-	public static boolean checkExecute(Scheduler scheduler, Vector<JobKey> jFolder){
+	private static boolean checkTriggers(Scheduler scheduler, List<? extends Trigger> triggers) throws SchedulerException{
+		boolean result = false;
+		TriggerState triggerState = null;
+
+		try {
+			if  (triggers != null && triggers.size()>0){
+				triggerState = null;
+				for (Trigger trigger : triggers){
+					triggerState = scheduler.getTriggerState(trigger.getKey());
+					if (triggerState != null){
+						break;
+					}
+				}
+				if (triggerState != null){
+					if (TriggerState.BLOCKED.equals(triggerState)){
+						result = true;
+					} else if (TriggerState.COMPLETE.equals(triggerState)){
+						result = false;
+					} else if (TriggerState.ERROR.equals(triggerState)){
+						result = true;
+					} else if (TriggerState.NORMAL.equals(triggerState)){
+						result = true;
+					} else if (TriggerState.PAUSED.equals(triggerState)){
+						result = true;
+					} else if (TriggerState.NONE.equals(triggerState)){
+						result = false;
+					} else {
+						result = false;
+					}
+
+				}
+			}
+		} catch (SchedulerException e) {
+			throw e;
+		}
+		return result;
+	}
+
+	public static boolean checkExecute(Scheduler scheduler, Hashtable<String, JobKey> jFolder){
 //		 = null;
-		JobKey key = null;
+		JobKey jobKey = null;
+		String key = null;
+		JobDetail jobDetail = null;
+		Enumeration<String> keys = null;
 //		keys = parameter.getFolders().keys();
 		boolean result = false;
+		
+		System.out.println("\n\ncheckExecute START");
 		if (jFolder== null){
 			result = true;
 		} else {
-			for (int x=0; x<jFolder.size(); x++){
-				try {
-					key = jFolder.get(x);
-					if (scheduler==null){
-						result = true;
-					} else {
-						if (scheduler.checkExists(key)) {
+			try {
+				if (!scheduler.getCurrentlyExecutingJobs().isEmpty() && scheduler.getCurrentlyExecutingJobs().size()>1){
+					System.out.println("CurrentlyExecutingJobs => "+scheduler.getCurrentlyExecutingJobs().size());
+					result=true;
+				} else {
+					keys = jFolder.keys();
+					while (keys.hasMoreElements()){
+//			for (int x=0; x<jFolder.size(); x++){
+						try {
+							key = keys.nextElement();
+							jobKey = jFolder.get(key);
+							System.out.print("CheckExecute: "+jobKey.getGroup()+" => "+jobKey.getName()+" ");
+							if (scheduler==null){
+								System.out.print("scheduler IS NULL");
+								result = true;
+							} else {
+								jobDetail = scheduler.getJobDetail(jobKey);
+								
+								if  (checkTriggers(scheduler, scheduler.getTriggersOfJob(jobKey))){
+									result = true;
+								} else if (jobDetail != null && jobDetail.getDescription() != null){
+									System.out.print("jobDetail: "+jobDetail.getDescription());
+									result = true;
+								} else if (scheduler.checkExists(jobKey)) {
+									System.out.print("checkExists ID TRUE");
+									result = true;
+								} else  {
+									System.out.print("E' finito");
+								}
+								System.out.println(" "+result);
+							}
+						} catch (SchedulerException e) {
+							log.error(e.getMessage(), e);
+							result = true;
+						} catch (Exception e) {
+							log.error(e.getMessage(), e);
 							result = true;
 						}
 					}
-				} catch (SchedulerException e) {
-					log.error(e.getMessage(), e);
-					result = true;
 				}
+			} catch (SchedulerException e) {
+				log.error(e.getMessage(), e);
+				result = true;
+			} catch (Exception e) {
+				log.error(e.getMessage(), e);
+				result = true;
 			}
 		}
+		System.out.println("checkExecute END => result: "+result);
 		return result;
 	}
 

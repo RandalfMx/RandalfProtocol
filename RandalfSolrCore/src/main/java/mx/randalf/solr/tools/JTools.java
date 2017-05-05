@@ -5,7 +5,6 @@ package mx.randalf.solr.tools;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Hashtable;
 import java.util.UUID;
 import java.util.Vector;
 
@@ -13,15 +12,13 @@ import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.quartz.JobKey;
-import org.quartz.SchedulerException;
 
 import mx.randalf.configuration.Configuration;
 import mx.randalf.configuration.exception.ConfigurationException;
 import mx.randalf.quartz.QuartzTools;
+import mx.randalf.quartz.job.JobExecute;
 import mx.randalf.solr.FindDocument;
 import mx.randalf.solr.Params;
 import mx.randalf.solr.exception.SolrException;
@@ -30,7 +27,7 @@ import mx.randalf.solr.exception.SolrException;
  * @author massi
  *
  */
-public abstract class JTools implements Job {
+public abstract class JTools extends JobExecute{
 
 	private static Logger log = Logger.getLogger(JTools.class);
 
@@ -41,12 +38,6 @@ public abstract class JTools implements Job {
 	 */
 	public JTools() {
 	}
-
-	/**
-	 * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
-	 */
-	@Override
-	public abstract void execute(JobExecutionContext context) throws JobExecutionException;
 
 	protected void read(String key, String value){
 		if (value != null && !value.trim().equals("")){
@@ -129,22 +120,22 @@ public abstract class JTools implements Job {
 		return objectIdentifier;
 	}
 
-	public static JobKey start (JobExecutionContext context, 
-			Class<? extends Job> myClass, String jobGroup, String jobName, 
-			String triggerGroup, String triggerName, Hashtable<String, Object> params) 
-					throws SchedulerException{
-		JobKey jobKey = null;
-
-		try {
-			jobKey = QuartzTools.startJob(context.getScheduler(), myClass, 
-					jobGroup,  jobName, triggerGroup, triggerName,
-					params);
-		} catch (SchedulerException e) {
-			log.error("["+QuartzTools.getName(context)+"] "+e.getMessage(), e);
-			throw e;
-		}
-		return jobKey;
-	}
+//	public static JobKey start (JobExecutionContext context, 
+//			Class<? extends JobExecute> myClass, String jobGroup, String jobName, 
+//			String triggerGroup, String triggerName, Hashtable<String, Object> params) 
+//					throws SchedulerException{
+//		JobKey jobKey = null;
+//
+//		try {
+//			jobKey = QuartzTools.startJob(context.getScheduler(), myClass, 
+//					jobGroup,  jobName, triggerGroup, triggerName,
+//					params);
+//		} catch (SchedulerException e) {
+//			log.error("["+QuartzTools.getName(context)+"] "+e.getMessage(), e);
+//			throw e;
+//		}
+//		return jobKey;
+//	}
 
 	/**
 	 * 
