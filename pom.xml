@@ -11,5 +11,6 @@
   	<module>RandalfCatSan</module>
   	<module>RandalfHibernateSpring</module>
   	<module>RandalfAmazonS3</module>
+  	<module>RandalfWsdl</module>
   </modules>
 </project>

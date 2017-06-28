@@ -15,6 +15,7 @@ import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
 
@@ -402,5 +403,33 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable> implements
 
 	public String getFileHibernate() {
 		return fileHibernate;
+	}
+
+	public Integer max(String key) throws HibernateException, HibernateUtilException {
+		return max(key,null);
+	}
+
+	public Integer max(String key, Criteria criteria) throws HibernateException, HibernateUtilException {
+		Criteria crit = null;
+		Integer result = null;
+
+		try {
+			beginTransaction();
+			if (criteria != null){
+				crit = criteria;
+			} else {
+				crit = createCriteria();
+			}
+			crit.setProjection(Projections.max(key));
+			result = (Integer) crit.uniqueResult();
+			commitTransaction();
+		} catch (HibernateException e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		} catch (HibernateUtilException e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		}
+		return result;
 	}
 }
