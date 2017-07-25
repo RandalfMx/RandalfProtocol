@@ -220,6 +220,7 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable> implements
 
 				beginTransaction();
 				crit = createCriteria();
+				initTableJoin(crit);
 				if (orders != null) {
 					for (Order order : orders) {
 						crit.addOrder(order);
@@ -248,6 +249,9 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable> implements
 		}
 
 		return result;
+	}
+
+	protected void initTableJoin(Criteria crit) {
 	}
 
 	public T findById(ID id) throws HibernateException, HibernateUtilException {
@@ -421,6 +425,34 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable> implements
 				crit = createCriteria();
 			}
 			crit.setProjection(Projections.max(key));
+			result = (Integer) crit.uniqueResult();
+			commitTransaction();
+		} catch (HibernateException e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		} catch (HibernateUtilException e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		}
+		return result;
+	}
+
+	public Integer rowCount() throws HibernateException, HibernateUtilException {
+		return rowCount(null);
+	}
+
+	public Integer rowCount(Criteria criteria) throws HibernateException, HibernateUtilException {
+		Criteria crit = null;
+		Integer result = null;
+
+		try {
+			beginTransaction();
+			if (criteria != null){
+				crit = criteria;
+			} else {
+				crit = createCriteria();
+			}
+			crit.setProjection(Projections.rowCount());
 			result = (Integer) crit.uniqueResult();
 			commitTransaction();
 		} catch (HibernateException e) {
