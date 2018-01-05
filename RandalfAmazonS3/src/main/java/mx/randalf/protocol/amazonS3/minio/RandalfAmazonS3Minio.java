@@ -5,10 +5,13 @@ package mx.randalf.protocol.amazonS3.minio;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 import org.xmlpull.v1.XmlPullParserException;
+
+import com.amazonaws.services.s3.model.S3Object;
 
 import io.minio.MinioClient;
 import io.minio.Result;
@@ -79,7 +82,8 @@ public class RandalfAmazonS3Minio extends IRandalfAmazonS3<MinioClient> {
 		return result;
 	}
 
-	protected boolean exists(MinioClient minioClient, String bucketName, String fileOutput, String md5) throws RandalfAmazonS3Exception{
+	@Override
+	protected boolean exists(MinioClient minioClient, String bucketName, String fileOutput) throws RandalfAmazonS3Exception{
 		Iterable<Result<Item>> myObjects = null;
 		Item item = null;
 		boolean exists = false;
@@ -113,6 +117,11 @@ public class RandalfAmazonS3Minio extends IRandalfAmazonS3<MinioClient> {
 			throw new RandalfAmazonS3Exception(e.getMessage(), e);
 		}
 		return exists;
+	}
+
+	@Override
+	protected boolean isValid(MinioClient minioClient, String bucketName, String fileOutput, String md5Base64, String md5) throws RandalfAmazonS3Exception{
+		return exists(minioClient, bucketName, fileOutput);
 	}
 
 	protected MinioClient openConn(String bucketName) throws RandalfAmazonS3Exception{
@@ -151,5 +160,18 @@ public class RandalfAmazonS3Minio extends IRandalfAmazonS3<MinioClient> {
 		}
 
 		return minioClient;
+	}
+
+	@Override
+	protected S3Object readInfo(MinioClient storage, String bucketName, String fileInput) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected InputStream getFile(MinioClient storage, String bucketName, String fileInput, Integer start, Integer end)
+			throws RandalfAmazonS3Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

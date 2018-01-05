@@ -66,7 +66,7 @@ public class Params {
 		} else {
 			values= params.get(key);
 		}
-		values.add(value);
+		values.add(value.toString());
 		params.put(key, values);
 	}
 

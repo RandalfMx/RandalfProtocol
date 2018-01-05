@@ -5,7 +5,9 @@ package mx.randalf.protocol.amazonS3.googleCloud;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 
+import com.amazonaws.services.s3.model.S3Object;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
@@ -71,7 +73,7 @@ public class RandalfAmazonS3GoogleCloud extends IRandalfAmazonS3<Storage> {
 	 * 
 	 */
 	@Override
-	protected boolean exists(Storage storage, String bucketName, String fileOutput, String md5)
+	protected boolean exists(Storage storage, String bucketName, String fileOutput)
 			throws RandalfAmazonS3Exception {
 		Blob blob = null;
 		BlobId blobId = null;
@@ -81,6 +83,22 @@ public class RandalfAmazonS3GoogleCloud extends IRandalfAmazonS3<Storage> {
 		blob = storage.get(blobId);
 
 		if (blob != null && blob.exists()) {
+			exists = true;
+		}
+		return exists;
+	}
+
+	@Override
+	protected boolean isValid(Storage storage, String bucketName, String fileOutput, String md5Base64, String md5)
+			throws RandalfAmazonS3Exception {
+		Blob blob = null;
+		BlobId blobId = null;
+		boolean exists = false;
+
+		blobId = BlobId.of(bucketName, fileOutput);
+		blob = storage.get(blobId);
+
+		if (exists(storage, bucketName, fileOutput)){
 			if (blob.getMd5().equals(md5)) {
 				exists = true;
 			} else {
@@ -100,5 +118,18 @@ public class RandalfAmazonS3GoogleCloud extends IRandalfAmazonS3<Storage> {
 		storage = helper.getOptions().getService();
 
 		return storage;
+	}
+
+	@Override
+	protected S3Object readInfo(Storage storage, String bucketName, String fileInput) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected InputStream getFile(Storage storage, String bucketName, String fileInput, Integer start, Integer end)
+			throws RandalfAmazonS3Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

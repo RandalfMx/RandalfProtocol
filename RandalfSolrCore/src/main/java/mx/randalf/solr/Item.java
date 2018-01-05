@@ -10,6 +10,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;
 
@@ -19,6 +20,8 @@ import org.apache.solr.common.SolrInputDocument;
  *
  */
 public class Item {
+
+	private static Logger log = Logger.getLogger(Item.class);
 
 	/**
 	 * Campo relativo alla Versione necessario per la gestione del motore SolrCloud
@@ -115,33 +118,41 @@ public class Item {
 		SimpleDateFormat df = null;
 		String vSort = null;
 
-		df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS");
+		try{
+			if (value != null){
+				df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS");
+				
+				item.addField(key, value);
+				if (value instanceof String){
+					valore = (String) value;
+				} else if (value instanceof Long){
+					valore = ((Long) value).toString();
+				} else if (value instanceof Date){
+					valore = df.format((Date) value);
+				}
 		
-		item.addField(key, value);
-		if (value instanceof String){
-			valore = (String) value;
-		} else if (value instanceof Long){
-			valore = ((Long) value).toString();
-		} else if (value instanceof Date){
-			valore = df.format((Date) value);
-		}
-
-		if (show){
-			item.addField(key+"_show", valore);
-		}
-		if (sort){
-			vSort = (String) item.getFieldValue(key+"_sort");
-			if (vSort!= null){
-				item.setField(key+"_sort", vSort +" "+value);
+				if (show){
+					item.addField(key+"_show", valore);
+				}
+				if (sort){
+					vSort = (String) item.getFieldValue(key+"_sort");
+					if (vSort!= null){
+						item.setField(key+"_sort", vSort +" "+value);
+					} else {
+						item.addField(key+"_sort", valore);
+					}
+				}
+				if (kw){
+					item.addField(key+"_kw", valore);
+				}
+				if (fc){
+					item.addField(key+"_fc", valore.replace(" ", "_"));
+				}
 			} else {
-				item.addField(key+"_sort", valore);
+				log.error("Il valore della chiave ["+key+"] e' null");
 			}
-		}
-		if (kw){
-			item.addField(key+"_kw", valore);
-		}
-		if (fc){
-			item.addField(key+"_fc", valore.replace(" ", "_"));
+		} catch (NullPointerException e){
+			System.out.println("key: "+key+" Error: "+e.getMessage());
 		}
 	}
 

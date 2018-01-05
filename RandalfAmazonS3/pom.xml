@@ -8,17 +8,17 @@
 	</parent>
 	<groupId>mx.randalf.protocol.amazonS3</groupId>
 	<artifactId>RandalfAmazonS3</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.7</maven.compiler.source>
-		<maven.compiler.target>1.7</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk</artifactId>
-			<version>1.11.58</version>
+			<version>1.11.250</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.cloud</groupId>

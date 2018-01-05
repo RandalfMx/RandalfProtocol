@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>mx.randalf.solr</groupId>
 	<artifactId>RandalfSolrCore</artifactId>
-	<version>1.0.17</version>
+	<version>1.0.18</version>
 	<description>Librerie per la gestione del Core di accesso verso Solr</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -19,7 +19,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-jdk14</artifactId>
-			<version>1.7.12</version>
+			<version>1.7.25</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
