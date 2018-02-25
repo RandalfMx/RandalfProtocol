@@ -101,27 +101,27 @@ class SolrCore {
 	 */
 	public synchronized void optimize() throws SolrServerException, IOException 
 	{
-		log.info("Optmize ID: "+id);
+		log.info("\n"+"Optmize ID: "+id);
 		if (!lOptmize.contains(id)){
-			log.debug("addOptmize ID: "+id);
+			log.debug("\n"+"addOptmize ID: "+id);
 			lOptmize.add(id);
 		}
 		try {
 			while (true){
-				log.debug("Optmize test posizione 0 : "+lOptmize.get(0));
+				log.debug("\n"+"Optmize test posizione 0 : "+lOptmize.get(0));
 				if (((String)lOptmize.get(0)).equals(id)){
-					log.info("Optmize test ID: "+id+" TROVATO nella posizione 0");
+					log.info("\n"+"Optmize test ID: "+id+" TROVATO nella posizione 0");
 					break;
 				}
-				log.debug("Optmize test ID: "+id+" non trovato");
+				log.debug("\n"+"Optmize test ID: "+id+" non trovato");
 				try {
 					Thread.sleep(10000);
 				} catch (InterruptedException e) {
 				}
 			}
-			log.debug("Optmize ID: "+id+" in esecuzione");
+			log.debug("\n"+"Optmize ID: "+id+" in esecuzione");
 			server.optimize();
-			log.info("Optmize ID: "+id+" terminato");
+			log.info("\n"+"Optmize ID: "+id+" terminato");
 		} catch (SolrServerException e) {
 			throw e;
 		} catch (IOException e) {
@@ -140,27 +140,27 @@ class SolrCore {
 	 *             Errore IO
 	 */
 	public synchronized void commit() throws SolrServerException, IOException {
-		log.info("Commit ID: "+id);
+		log.info("\n"+"Commit ID: "+id);
 		if (!lCommit.contains(id)){
-			log.debug("addCommit ID: "+id);
+			log.debug("\n"+"addCommit ID: "+id);
 			lCommit.add(id);
 		}
 		try {
 			while (true){
-				log.debug("Commit test posizione 0 : "+lCommit.get(0));
+				log.debug("\n"+"Commit test posizione 0 : "+lCommit.get(0));
 				if (((String)lCommit.get(0)).equals(id)){
-					log.info("Commit test ID: "+id+" TROVATO nella posizione 0");
+					log.info("\n"+"Commit test ID: "+id+" TROVATO nella posizione 0");
 					break;
 				}
-				log.debug("Commit test ID: "+id+" non trovato");
+				log.debug("\n"+"Commit test ID: "+id+" non trovato");
 				try {
 					Thread.sleep(10000);
 				} catch (InterruptedException e) {
 				}
 			}
-			log.debug("Commit ID: "+id+" in esecuzione");
+			log.debug("\n"+"Commit ID: "+id+" in esecuzione");
 			server.commit();
-			log.info("Commit ID: "+id+" terminato");
+			log.info("\n"+"Commit ID: "+id+" terminato");
 		} catch (SolrServerException e) {
 			throw e;
 		} catch (IOException e) {
@@ -185,35 +185,35 @@ class SolrCore {
 	public void add(UpdateRequest request) throws SolrServerException, IOException{
 		NamedList<?> response = null;
 
-		log.info("Add ID: "+id);
+		log.info("\n"+"Add ID: "+id);
 		if (!lAdd.contains(id)){
-			log.debug("addAdd ID: "+id);
+			log.debug("\n"+"addAdd ID: "+id);
 			lAdd.add(id);
 		}
 		try {
 			while (true){
-				log.debug("Add test posizione 0 : "+lAdd.get(0));
+				log.debug("\n"+"Add test posizione 0 : "+lAdd.get(0));
 				if (((String)lAdd.get(0)).equals(id)){
-					log.info("Add test ID: "+id+" TROVATO nella posizione 0");
+					log.info("\n"+"Add test ID: "+id+" TROVATO nella posizione 0");
 					break;
 				}
-				log.debug("Add test ID: "+id+" non trovato");
+				log.debug("\n"+"Add test ID: "+id+" non trovato");
 				try {
 					Thread.sleep(10000);
 				} catch (InterruptedException e) {
 				}
 			}
-			log.debug("info ID: "+id+" in esecuzione");
-			log.debug("add(UpdateRequest request) - "+request.getDocuments().size());
+			log.debug("\n"+"info ID: "+id+" in esecuzione");
+			log.debug("\n"+"add(UpdateRequest request) - "+request.getDocuments().size());
 			request.setAction(ACTION.OPTIMIZE, false, false);
 			response = server.request(request); // Returns a backwards compatible condensed response.
-			log.debug("add(UpdateRequest request) FINE ");
+			log.debug("\n"+"add(UpdateRequest request) FINE ");
 			for (int x=0; x<response.size(); x++){
 				if (((Integer)((NamedList<?>)response.get(response.getName(x))).get("status"))!=0){
 					throw new SolrServerException("Riscontrato un problema durante l'aggiornamento");
 				}
 			}
-			log.info("Add ID: "+id+" terminato");
+			log.info("\n"+"Add ID: "+id+" terminato");
 		} catch (SolrServerException e) {
 			throw e;
 		} catch (IOException e) {

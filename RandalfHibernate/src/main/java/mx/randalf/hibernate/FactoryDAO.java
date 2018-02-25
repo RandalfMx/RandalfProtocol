@@ -54,7 +54,7 @@ public class FactoryDAO {
 		boolean autoTransaction = false;
 		String message = "";
 		try {
-			log.debug("Begin of beginTransaction");
+			log.debug("\n"+"Begin of beginTransaction");
 			synchronized (syncTransObj) {
 				autoTransaction = HibernateUtil.getInstance(fileHibernate).isAutoTransaction();
 				if (autoTransaction) {
@@ -64,7 +64,7 @@ public class FactoryDAO {
 					message = "Using existing transaction: ";
 				message = message + HibernateUtil.getInstance(fileHibernate).getCurrentTransaction().hashCode();
 			}
-			log.info(message);
+			log.info("\n"+message);
 		} catch (HibernateException e) {
 			log.error(e.getMessage(), e);
 			throw e;
@@ -75,7 +75,7 @@ public class FactoryDAO {
 			log.error(e.getMessage(), e);
 			throw new HibernateUtilException(e.getMessage(), e);
 		} finally {
-			log.debug("End of beginTransaction");
+			log.debug("\n"+"End of beginTransaction");
 		}
 		return autoTransaction;
 	}
@@ -83,7 +83,7 @@ public class FactoryDAO {
 	public static void commitTransaction(boolean autoTransaction) throws HibernateException, HibernateUtilException {
 		String message = "";
 		try {
-			log.debug("Begin of commitTransaction");
+			log.debug("\n"+"Begin of commitTransaction");
 			synchronized (syncTransObj) {
 				if (HibernateUtil.getInstance(fileHibernate).getCurrentTransaction() != null) {
 					message = "" + HibernateUtil.getInstance(fileHibernate).getCurrentTransaction().hashCode();
@@ -97,7 +97,7 @@ public class FactoryDAO {
 					message = "No transaction present for commit";
 				}
 			}
-			log.info(message);
+			log.info("\n"+message);
 		} catch (HibernateException e) {
 			log.error(e.getMessage(), e);
 			throw e;
@@ -108,14 +108,14 @@ public class FactoryDAO {
 			log.error(e.getMessage(), e);
 			throw new HibernateUtilException(e.getMessage(), e);
 		} finally {
-			log.debug("End of commitTransaction");
+			log.debug("\n"+"End of commitTransaction");
 		}
 	}
 
 	public static void rollbackTransaction(boolean autoTransaction) throws HibernateException, HibernateUtilException {
 		String message = "";
 		try {
-			log.debug("Begin of rollbackTransaction");
+			log.debug("\n"+"Begin of rollbackTransaction");
 			synchronized (syncTransObj) {
 				if (HibernateUtil.getInstance(fileHibernate).getCurrentTransaction() != null) {
 					message = "" + HibernateUtil.getInstance(fileHibernate).getCurrentTransaction().hashCode();
@@ -129,7 +129,7 @@ public class FactoryDAO {
 					message = "No transaction present for rollback";
 				}
 			}
-			log.info(message);
+			log.info("\n"+message);
 		} catch (HibernateException e) {
 			log.error(e.getMessage(), e);
 			throw e;
@@ -140,7 +140,7 @@ public class FactoryDAO {
 			log.error(e.getMessage(), e);
 			throw new HibernateUtilException(e.getMessage(), e);
 		} finally {
-			log.debug("End of rollbackTransaction");
+			log.debug("\n"+"End of rollbackTransaction");
 		}
 	}
 
@@ -254,7 +254,7 @@ public class FactoryDAO {
 			myData.setTimeInMillis(data.getTime());
 			dataITA = converDateIta(myData);
 		} catch (Exception exc) {
-			log.error(exc);
+			log.error(exc.getMessage(), exc);
 		}
 
 		return dataITA;
@@ -284,7 +284,7 @@ public class FactoryDAO {
 			dataITA += myData.get(Calendar.YEAR);
 
 		} catch (Exception exc) {
-			log.error(exc);
+			log.error(exc.getMessage(), exc);
 		}
 
 		return dataITA;

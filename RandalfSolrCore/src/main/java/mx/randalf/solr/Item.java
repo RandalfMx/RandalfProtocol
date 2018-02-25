@@ -103,7 +103,7 @@ public class Item {
 							}
 						}
 					} else {
-						System.out.println("EEEEE: "+field);
+						log.error("\n"+"EEEEE: "+field);
 					}
 				}
 			}
@@ -149,10 +149,11 @@ public class Item {
 					item.addField(key+"_fc", valore.replace(" ", "_"));
 				}
 			} else {
-				log.error("Il valore della chiave ["+key+"] e' null");
+				log.error("\n"+"Il valore della chiave ["+key+"] e' null");
 			}
 		} catch (NullPointerException e){
-			System.out.println("key: "+key+" Error: "+e.getMessage());
+			log.error("\n"+"key: "+key+" Error: "+e.getMessage());
+			log.error(e.getMessage(), e);
 		}
 	}
 

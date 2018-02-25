@@ -236,7 +236,7 @@ public class QuartzTools {
 				try {
 					
 					if (!scheduler.checkExists(listJobs.get(key))){
-						System.out.println("Remove: "+key);
+						log.debug("\n"+"Remove: "+key);
 						listJobs.remove(key);
 					}
 				} catch (SchedulerException e) {
@@ -304,13 +304,13 @@ public class QuartzTools {
 //		keys = parameter.getFolders().keys();
 		boolean result = false;
 		
-		System.out.println("\n\ncheckExecute START");
+		log.debug("\n\ncheckExecute START");
 		if (jFolder== null){
 			result = true;
 		} else {
 			try {
 				if (!scheduler.getCurrentlyExecutingJobs().isEmpty() && scheduler.getCurrentlyExecutingJobs().size()>1){
-					System.out.println("CurrentlyExecutingJobs => "+scheduler.getCurrentlyExecutingJobs().size());
+					log.debug("\n"+"CurrentlyExecutingJobs => "+scheduler.getCurrentlyExecutingJobs().size());
 					result=true;
 				} else {
 					keys = jFolder.keys();
@@ -319,9 +319,9 @@ public class QuartzTools {
 						try {
 							key = keys.nextElement();
 							jobKey = jFolder.get(key);
-							System.out.print("CheckExecute: "+jobKey.getGroup()+" => "+jobKey.getName()+" ");
+							log.debug("\n"+"CheckExecute: "+jobKey.getGroup()+" => "+jobKey.getName()+" ");
 							if (scheduler==null){
-								System.out.print("scheduler IS NULL");
+								log.debug("\n"+"scheduler IS NULL");
 								result = true;
 							} else {
 								jobDetail = scheduler.getJobDetail(jobKey);
@@ -329,15 +329,15 @@ public class QuartzTools {
 								if  (checkTriggers(scheduler, scheduler.getTriggersOfJob(jobKey))){
 									result = true;
 								} else if (jobDetail != null && jobDetail.getDescription() != null){
-									System.out.print("jobDetail: "+jobDetail.getDescription());
+									log.debug("\n"+"jobDetail: "+jobDetail.getDescription());
 									result = true;
 								} else if (scheduler.checkExists(jobKey)) {
-									System.out.print("checkExists ID TRUE");
+									log.debug("\n"+"checkExists ID TRUE");
 									result = true;
 								} else  {
-									System.out.print("E' finito");
+									log.debug("\n"+"E' finito");
 								}
-								System.out.println(" "+result);
+								log.debug("\n"+" "+result);
 							}
 						} catch (SchedulerException e) {
 							log.error(e.getMessage(), e);

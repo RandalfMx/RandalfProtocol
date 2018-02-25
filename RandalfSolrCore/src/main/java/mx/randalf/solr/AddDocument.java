@@ -151,14 +151,14 @@ public abstract class AddDocument extends FindDocument {
 
 	@Override
 	public void commit() throws SolrServerException, IOException {
-		log.debug("Commit");
+		log.debug("\n"+"Commit");
 		if (request!= null){
-			log.debug("Commit - add");
+			log.debug("\n"+"Commit - add");
 			add(request);
-			log.debug("Commit - add - Fine");
+			log.debug("\n"+"Commit - add - Fine");
 		}
-		log.debug("Commit - Commit");
+		log.debug("\n"+"Commit - Commit");
 		super.commit();
-		log.debug("Commit - Commit - Fine");
+		log.debug("\n"+"Commit - Commit - Fine");
 	}
 }

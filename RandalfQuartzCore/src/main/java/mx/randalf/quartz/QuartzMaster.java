@@ -142,7 +142,7 @@ public class QuartzMaster {
 			}
 			while (true) {
 				if (!QuartzTools.checkExecute(scheduler, listJobs)) {
-					System.out.println("FINEEEE");
+					log.debug("\nFINEEEE");
 					break;
 				}
 				try {
@@ -152,7 +152,7 @@ public class QuartzMaster {
 				}
 			}
 			if (shutdown){
-				System.out.println("ESCO");
+				log.debug("\nESCO");
 				scheduler.shutdown(true);
 			}
 		} catch (SchedulerException e) {
@@ -162,7 +162,7 @@ public class QuartzMaster {
 
 	public void add(String prefix, JobKey jobKey) {
 //		listJobs = QuartzTools.checkJobs(scheduler, prefix, listJobs, nThread, tSleep);
-		System.out.println("ADD: "+jobKey);
+		log.debug("\nADD: "+jobKey);
 		listJobs.put(jobKey.getGroup()+"-"+jobKey.getName(),jobKey);
 	}
 

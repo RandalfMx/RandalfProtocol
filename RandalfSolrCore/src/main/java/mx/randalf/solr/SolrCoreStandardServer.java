@@ -88,7 +88,7 @@ public class SolrCoreStandardServer extends SolrCoreServer<HttpSolrClient>{
 			o = new Object[sdl.size()];
 			o = sdl.toArray();
 			for (int i = 0; i < o.length; i++){
-			   log.debug(o[i].toString());
+			   log.debug("\n"+o[i].toString());
 			   writer.write(o[i].toString() + "\n");
 			}
 		} catch (SolrServerException e) {

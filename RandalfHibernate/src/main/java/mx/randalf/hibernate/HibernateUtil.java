@@ -74,7 +74,7 @@ public class HibernateUtil {
 					keys = lists.keys();
 					while (keys.hasMoreElements()) {
 						key = keys.nextElement();
-						log.debug(key + ": " + lists.get(key));
+						log.debug("\n"+key + ": " + lists.get(key));
 					}
 					if (mx.randalf.configuration.Configuration.getValue("dataSource") != null) {
 						sessionFactory = (SessionFactory) ctx

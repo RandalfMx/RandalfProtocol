@@ -43,7 +43,7 @@ public class QuartzSocket extends Thread {
 		Client client = null;
 		
 		try {
-			System.out.println("Eseguo lo shutdown");
+			log.info("\n"+"Eseguo lo shutdown");
 			client = new Client();
 			client.Connect("127.0.0.1", port);
 			client.Send("CLOSE");
@@ -71,7 +71,7 @@ public class QuartzSocket extends Thread {
 		String input = null;
 		
 		try {
-			System.out.println("Apro la porta: "+port);
+			log.debug("\n"+"Apro la porta: "+port);
 			server = new Server();
 			server.OpenServer(port);
 			

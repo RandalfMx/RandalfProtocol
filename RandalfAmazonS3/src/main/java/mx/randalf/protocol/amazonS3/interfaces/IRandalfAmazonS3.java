@@ -41,11 +41,11 @@ public abstract class IRandalfAmazonS3<S> {
 		try {
 			storage = openConn(bucketName);
 			
-			md5 = new MD5();
-			this.md5Base64 = md5.getDigest64Base(fileInput);
-			this.md5 = md5.getDigest(fileInput);
+			md5 = new MD5(fileInput);
+			this.md5Base64 = md5.getDigest64Base();
+			this.md5 = md5.getDigest();
 			if (!isValid(storage, bucketName, fileOutput, this.md5Base64, this.md5)){
-				if (sendFile(storage, fileInput, contentType, md5Base64, bucketName, fileOutput)){
+				if (sendFile(storage, fileInput, contentType, this.md5Base64, this.md5, bucketName, fileOutput)){
 					result=true;
 				}
 			} else {
@@ -58,6 +58,8 @@ public abstract class IRandalfAmazonS3<S> {
 		} catch (FileNotFoundException e) {
 			throw new RandalfAmazonS3Exception(e.getMessage(), e);
 		} catch (IOException e) {
+			throw new RandalfAmazonS3Exception(e.getMessage(), e);
+		} catch (Exception e) {
 			throw new RandalfAmazonS3Exception(e.getMessage(), e);
 		}
 		return result;
@@ -148,8 +150,8 @@ public abstract class IRandalfAmazonS3<S> {
 
 	protected abstract InputStream getFile(S storage, String bucketName, String fileInput, Integer start, Integer end)  throws RandalfAmazonS3Exception;
 
-	protected abstract boolean sendFile(S storage, File fileInput, String contentType, String md5Base64, 
-			String bucketName, String fileOutput) throws RandalfAmazonS3Exception;
+	protected abstract boolean sendFile(S storage, File fileInput, String contentType, String md5Base64,
+			String md5, String bucketName, String fileOutput) throws RandalfAmazonS3Exception;
 
 	protected abstract boolean exists(S storage, String bucketName, String fileOutput)
 			throws RandalfAmazonS3Exception;

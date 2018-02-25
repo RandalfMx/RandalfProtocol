@@ -223,10 +223,10 @@ public class FindDocument extends SolrCore {
 			
 			response = query(solrQuery);
 		} catch (SolrServerException e) {
-			log.error(e);
+			log.error(e.getMessage(), e);
 			throw e;
 		} catch (Exception e) {
-			log.error(e);
+			log.error(e.getMessage(), e);
 			throw new SolrServerException(e.getMessage(), e);
 		}
 		return response;

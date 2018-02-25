@@ -6,6 +6,8 @@ package mx.randalf.protocol.amazonS3.amazonaws;
 import java.io.File;
 import java.io.InputStream;
 
+import org.apache.log4j.Logger;
+
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.SdkClientException;
@@ -16,6 +18,7 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.services.s3.model.S3Object;
@@ -30,7 +33,9 @@ import mx.randalf.protocol.amazonS3.interfaces.IRandalfAmazonS3;
  */
 public class RandalfAmazonS3Aws extends IRandalfAmazonS3<AmazonS3> {
 
-//	private String profileName = null;
+	private Logger log = Logger.getLogger(RandalfAmazonS3Aws.class);
+
+	//	private String profileName = null;
 	private String endPoint = null;
 	private Regions regions = null;
 	private String accessKey = null;
@@ -52,27 +57,47 @@ public class RandalfAmazonS3Aws extends IRandalfAmazonS3<AmazonS3> {
 	 *      java.lang.String, java.lang.String)
 	 */
 	@Override
-	public boolean sendFile(AmazonS3 storage, File fileInput, String contentType, String md5Base64, String bucketName,
-			String fileOutput) throws RandalfAmazonS3Exception {
+	public boolean sendFile(AmazonS3 storage, File fileInput, String contentType, String md5Base64, 
+			String md5, String bucketName,String fileOutput) throws RandalfAmazonS3Exception {
 		boolean result = false;
 		PutObjectRequest putObjectRequest = null;
 		PutObjectResult putObjectResult = null;
+		boolean testMd5 = false;
 
 		try {
 			putObjectRequest = new PutObjectRequest(bucketName, fileOutput, fileInput);
 
 			putObjectResult = storage.putObject(putObjectRequest);
 			
-			System.out.println("md5Base64: "+md5Base64);
+			log.debug("\n"+"md5Base64: "+md5Base64);
 			RandalfAmazonS3.printPutObjectResult(putObjectResult);
 
-			if (putObjectResult.getContentMd5().equals(md5Base64)) {
+			testMd5 = checkMd5(md5Base64, md5, putObjectResult);
+			if (testMd5) {
 				result = true;
 			}
 		} catch (Exception e) {
 			throw new RandalfAmazonS3Exception(e.getMessage(), e);
 		}
 		return result;
+	}
+
+	private boolean checkMd5(String md5Base64, String md5, PutObjectResult putObjectResult) {
+		boolean testMd5 = false;
+		testMd5 = false;
+		if (md5Base64 != null && ! md5Base64.trim().equals("")) {
+			if (putObjectResult.getContentMd5() != null && 
+					putObjectResult.getContentMd5().equals(md5Base64)) {
+				testMd5 = true;
+			}
+		}
+		if (md5 != null && ! md5.trim().equals("")) {
+			if (putObjectResult.getETag() != null && 
+					putObjectResult.getETag().equals(md5)) {
+				testMd5 = true;
+			}
+		}
+		return testMd5;
 	}
 
 	@Override
@@ -93,18 +118,22 @@ public class RandalfAmazonS3Aws extends IRandalfAmazonS3<AmazonS3> {
 	}
 
 	@Override
-	protected boolean isValid(AmazonS3 storage, String bucketName, String fileOutput, String md5Base64, String md5)
+	protected boolean isValid(AmazonS3 storage, String bucketName
+			, String fileOutput, String md5Base64, String md5)
 			throws RandalfAmazonS3Exception {
 		boolean exists = false;
 		S3Object s3Object = null;
+		ObjectMetadata objectMetadata = null;
+		boolean testMd5 = false;
 
 		try {
 			if (exists(storage, bucketName, fileOutput)) {
 				s3Object = storage.getObject(new GetObjectRequest(bucketName, fileOutput));
-				if ((s3Object.getObjectMetadata().getContentMD5() != null && 
-						s3Object.getObjectMetadata().getContentMD5().equals(md5Base64)) ||
-						(s3Object.getObjectMetadata().getETag() != null && 
-							s3Object.getObjectMetadata().getETag().equals(md5))) {
+
+				objectMetadata = s3Object.getObjectMetadata();
+
+				testMd5 = checkMd5(md5Base64, md5, objectMetadata);
+				if (testMd5) {
 					exists = true;
 				} else {
 					throw new RandalfAmazonS3Exception(
@@ -119,6 +148,24 @@ public class RandalfAmazonS3Aws extends IRandalfAmazonS3<AmazonS3> {
 			throw new RandalfAmazonS3Exception(e.getMessage(), e);
 		}
 		return exists;
+	}
+
+	private boolean checkMd5(String md5Base64, String md5, ObjectMetadata objectMetadata) {
+		boolean testMd5 = false;
+		testMd5 = false;
+		if (md5Base64 != null && ! md5Base64.trim().equals("")) {
+			if (objectMetadata.getContentMD5() != null && 
+					objectMetadata.getContentMD5().equals(md5Base64)) {
+				testMd5 = true;
+			}
+		}
+		if (md5 != null && ! md5.trim().equals("")) {
+			if (objectMetadata.getETag() != null && 
+					objectMetadata.getETag().equals(md5)) {
+				testMd5 = true;
+			}
+		}
+		return testMd5;
 	}
 
 	@Override
@@ -148,13 +195,13 @@ public class RandalfAmazonS3Aws extends IRandalfAmazonS3<AmazonS3> {
 		}
 
 		if (!s3Client.doesBucketExistV2(bucketName)) {
-			System.out.println("Create Bycket [" + bucketName + "]");
+			log.debug("\n"+"Create Bycket [" + bucketName + "]");
 			if (endPoint != null) {
 				s3Client.setEndpoint(endPoint);
 			}
 			s3Client.createBucket(bucketName);
 		} else {
-			System.out.println("Esiste Bycket [" + bucketName + "]");
+			log.debug("\n"+"Esiste Bycket [" + bucketName + "]");
 		}
 		return s3Client;
 	}

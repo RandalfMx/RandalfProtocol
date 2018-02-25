@@ -52,7 +52,7 @@ public class RandalfAmazonS3Minio extends IRandalfAmazonS3<MinioClient> {
 	 */
 	@Override
 	public boolean sendFile(MinioClient minioClient, File fileInput, String contentType, String md5Base64, 
-			String bucketName, String fileOutput) throws RandalfAmazonS3Exception {
+			String md5, String bucketName, String fileOutput) throws RandalfAmazonS3Exception {
 		boolean result = false;
 
 		try {

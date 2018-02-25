@@ -45,8 +45,8 @@ public class RandalfAmazonS3GoogleCloud extends IRandalfAmazonS3<Storage> {
 	 *      java.lang.String, java.lang.String)
 	 */
 	@Override
-	public boolean sendFile(Storage storage, File fileInput, String contentType, String md5Base64, String bucketName,
-			String fileOutput) throws RandalfAmazonS3Exception {
+	public boolean sendFile(Storage storage, File fileInput, String contentType, String md5Base64, 
+			String md5, String bucketName,String fileOutput) throws RandalfAmazonS3Exception {
 		BlobId blobId = null;
 		BlobInfo blobInfo = null;
 		Blob blob = null;
@@ -60,7 +60,7 @@ public class RandalfAmazonS3GoogleCloud extends IRandalfAmazonS3<Storage> {
 			blobInfo = BlobInfo.newBuilder(blobId).setContentType(contentType).build();
 			blob = storage.create(blobInfo, fileInputStream);
 
-			if (blob.getMd5().equals(md5Base64)) {
+			if (blob.getMd5().equals(md5)) {
 				result = true;
 			}
 		} catch (Exception e) {

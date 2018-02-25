@@ -91,7 +91,7 @@ public abstract class JobExecute implements Job {
 			throws SchedulerException {
 
 		try {
-			log.info("[" + QuartzTools.getName(context) + "] Schedulo il Job");
+			log.info("\n"+"[" + QuartzTools.getName(context) + "] Schedulo il Job");
 			listJobs.add(QuartzTools.startJob(context.getScheduler(), jClass, jobGroup, jobName, triggerGroup,
 					triggerName, params));
 		} catch (SchedulerException e) {
