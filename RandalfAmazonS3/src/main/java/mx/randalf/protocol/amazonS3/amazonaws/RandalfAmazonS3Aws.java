@@ -23,7 +23,6 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.services.s3.model.S3Object;
 
-import mx.randalf.protocol.amazonS3.RandalfAmazonS3;
 import mx.randalf.protocol.amazonS3.exception.RandalfAmazonS3Exception;
 import mx.randalf.protocol.amazonS3.interfaces.IRandalfAmazonS3;
 
@@ -70,7 +69,7 @@ public class RandalfAmazonS3Aws extends IRandalfAmazonS3<AmazonS3> {
 			putObjectResult = storage.putObject(putObjectRequest);
 			
 			log.debug("\n"+"md5Base64: "+md5Base64);
-			RandalfAmazonS3.printPutObjectResult(putObjectResult);
+//			RandalfAmazonS3.printPutObjectResult(putObjectResult);
 
 			testMd5 = checkMd5(md5Base64, md5, putObjectResult);
 			if (testMd5) {

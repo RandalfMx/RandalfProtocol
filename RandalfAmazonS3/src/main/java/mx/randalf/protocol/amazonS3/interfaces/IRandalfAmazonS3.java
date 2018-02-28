@@ -42,7 +42,7 @@ public abstract class IRandalfAmazonS3<S> {
 			storage = openConn(bucketName);
 			
 			md5 = new MD5(fileInput);
-			this.md5Base64 = md5.getDigest64Base();
+//			this.md5Base64 = md5.getDigest64Base();
 			this.md5 = md5.getDigest();
 			if (!isValid(storage, bucketName, fileOutput, this.md5Base64, this.md5)){
 				if (sendFile(storage, fileInput, contentType, this.md5Base64, this.md5, bucketName, fileOutput)){
