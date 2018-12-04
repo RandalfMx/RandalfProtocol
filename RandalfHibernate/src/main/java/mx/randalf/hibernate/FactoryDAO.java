@@ -8,15 +8,16 @@ import java.util.UUID;
 
 import javax.naming.NamingException;
 
-//import mx.randalf.configuration.exception.ConfigurationException;
-import mx.randalf.hibernate.exception.HibernateUtilException;
-
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
-import org.hibernate.LockMode;
+import org.hibernate.LockOptions;
 import org.hibernate.MappingException;
 import org.hibernate.Session;
+import org.hibernate.collection.internal.PersistentSet;
+
+//import mx.randalf.configuration.exception.ConfigurationException;
+import mx.randalf.hibernate.exception.HibernateUtilException;
 
 public class FactoryDAO {
 	private static final Logger log = Logger.getLogger(FactoryDAO.class);
@@ -169,7 +170,6 @@ public class FactoryDAO {
 	 *            "hibernate.cfg.xml")
 	 * @throws NamingException
 	 */
-	@SuppressWarnings("deprecation")
 	public static void initialize(Object entity, String fHibernate) throws HibernateException, HibernateUtilException {
 		fileHibernate = fHibernate;
 		// Per evitare l'errore "Illegally attempted to associate a proxy..."
@@ -179,12 +179,13 @@ public class FactoryDAO {
 
 			try {
 				if (entity != null) {
-					if (!Hibernate.isInitialized(entity)) {
+					if (!entity.getClass().getName().equals(PersistentSet.class.getName()) && !Hibernate.isInitialized(entity)) {
 						isSessionOpened = HibernateUtil.getInstance(fileHibernate).isSessionOpened();
 						session = HibernateUtil.getInstance(fileHibernate).getSession();
 						try {
 							try {
-								session.lock(entity, LockMode.NONE);
+								session.buildLockRequest(LockOptions.NONE).lock(entity);
+//								session.lock(entity, LockMode.NONE);
 							} catch (MappingException e) {
 								session.persist(entity);
 							}

@@ -53,7 +53,6 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable> implements
 
 	public void beginTransaction() throws HibernateException, HibernateUtilException {
 		try {
-			
 			session = HibernateUtil.getInstance(fileHibernate).getSession();
 			if (session != null) {
 				if (isToBeTransacted()) {
