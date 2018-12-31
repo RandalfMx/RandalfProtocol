@@ -436,31 +436,31 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable> implements
 		return result;
 	}
 
-	public Integer rowCount() throws HibernateException, HibernateUtilException {
-		return rowCount(null);
-	}
-
-	public Integer rowCount(Criteria criteria) throws HibernateException, HibernateUtilException {
+	public Long rowCount() throws HibernateException, HibernateUtilException {
 		Criteria crit = null;
-		Integer result = null;
+		Long result = null;
 
 		try {
 			beginTransaction();
-			if (criteria != null){
-				crit = criteria;
-			} else {
-				crit = createCriteria();
-			}
-			crit.setProjection(Projections.rowCount());
-			result = (Integer) crit.uniqueResult();
+			crit = createCriteria();
+			result = (Long) crit.uniqueResult();
 			commitTransaction();
 		} catch (HibernateException e) {
+			rollbackTransaction();
 			log.error(e.getMessage(), e);
 			throw e;
 		} catch (HibernateUtilException e) {
+			rollbackTransaction();
 			log.error(e.getMessage(), e);
 			throw e;
 		}
+		return result;
+	}
+	public Long rowCount(Criteria criteria) throws HibernateException, HibernateUtilException {
+		Long result = null;
+
+		criteria.setProjection(Projections.rowCount());
+		result = (Long) criteria.uniqueResult();
 		return result;
 	}
 }
