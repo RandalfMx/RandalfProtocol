@@ -12,5 +12,6 @@
   	<module>RandalfHibernateSpring</module>
   	<module>RandalfAmazonS3</module>
   	<module>RandalfWsdl</module>
+  	<module>RandalfGoogleXls</module>
   </modules>
 </project>

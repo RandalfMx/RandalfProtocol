@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>mx.randalf.solr</groupId>
 	<artifactId>RandalfSolrCore</artifactId>
-	<version>1.0.19</version>
+	<version>1.0.20</version>
 	<description>Librerie per la gestione del Core di accesso verso Solr</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -14,7 +14,7 @@
 		<dependency>
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-solrj</artifactId>
-			<version>5.5.2</version>
+			<version>6.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -50,7 +50,12 @@
 		<dependency>
 			<groupId>mx.randalf.quartz</groupId>
 			<artifactId>RandalfQuartzCore</artifactId>
-			<version>1.0.7</version>
+			<version>1.0.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-join</artifactId>
+			<version>5.3.0</version>
 		</dependency>
 	</dependencies>
 <!--

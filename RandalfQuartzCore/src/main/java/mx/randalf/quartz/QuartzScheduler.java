@@ -25,9 +25,10 @@ public abstract class QuartzScheduler extends QuartzMaster {
 	 * @param closeSocket
 	 * @throws SchedulerException
 	 */
-	public QuartzScheduler(boolean processing, String fileQuartz, Integer socketPort, boolean closeSocket, boolean reScheduling)
+	public QuartzScheduler(boolean processing, String fileQuartz, Integer socketPort, boolean closeSocket, 
+			boolean reScheduling, boolean quartzScheduler)
 			throws SchedulerException {
-		super(processing, fileQuartz, socketPort, closeSocket, reScheduling);
+		super(processing, fileQuartz, socketPort, closeSocket, reScheduling, quartzScheduler);
 	}
 
 	protected static Hashtable<String, Object> checkConf(String[] args){

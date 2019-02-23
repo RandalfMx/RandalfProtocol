@@ -21,6 +21,7 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerContext;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerListener;
+import org.quartz.SchedulerMetaData;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
@@ -64,7 +65,7 @@ public class QuartzMonitor extends QuartzMaster {
 			monitorListString("", "CalendarName", this.scheduler.getCalendarNames());
 			monitor("", "Context", this.scheduler.getContext());
 			monitor("", "CurrentlyExecutingJobs",this.scheduler.getCurrentlyExecutingJobs());
-			monitorJobGroupNames("", "JobGroupNames",this.scheduler.getJobGroupNames());
+			monitorJobGroupNames("", "JobGroupNames",this.scheduler.getJobGroupNames(), this.scheduler);
 			monitor("", "ListenerManager",this.scheduler.getListenerManager());
 			monitor("", "PausedTriggerGroups",this.scheduler.getPausedTriggerGroups());
 			monitor("", "SchedulerInstanceId",this.scheduler.getSchedulerInstanceId());
@@ -75,7 +76,7 @@ public class QuartzMonitor extends QuartzMaster {
 		}
 	}
 
-	private void monitorTriggerGroupNames(String prefix, String titolo, List<String> triggerGroupNames) {
+	public static void monitorTriggerGroupNames(String prefix, String titolo, List<String> triggerGroupNames) {
 		System.out.println(prefix+titolo+":");
 		prefix += "\t";
 		for (String string : triggerGroupNames){
@@ -83,7 +84,7 @@ public class QuartzMonitor extends QuartzMaster {
 		}
 	}
 
-	private void monitor(String prefix, String titolo, Set<String> pausedTriggerGroups) {
+	public static void monitor(String prefix, String titolo, Set<String> pausedTriggerGroups) {
 		System.out.println(prefix+titolo+":");
 		prefix += "\t";
 		for (String string : pausedTriggerGroups){
@@ -91,7 +92,7 @@ public class QuartzMonitor extends QuartzMaster {
 		}
 	}
 
-	private void monitor(String prefix, String titolo, ListenerManager listenerManager) {
+	public static void monitor(String prefix, String titolo, ListenerManager listenerManager) {
 		System.out.println(prefix+titolo+":");
 		prefix += "\t";
 		monitorJobListeners(prefix, "JobListeners", listenerManager.getJobListeners());
@@ -99,7 +100,7 @@ public class QuartzMonitor extends QuartzMaster {
 		monitorTriggerListeners(prefix, "TriggerListeners",listenerManager.getTriggerListeners());
 	}
 
-	private void monitorTriggerListeners(String prefix, String titolo, List<TriggerListener> triggerListeners) {
+	public static void monitorTriggerListeners(String prefix, String titolo, List<TriggerListener> triggerListeners) {
 		System.out.println(prefix+titolo+":");
 		prefix += "\t";
 		for (TriggerListener triggerListener : triggerListeners){
@@ -107,7 +108,7 @@ public class QuartzMonitor extends QuartzMaster {
 		}
 	}
 
-	private void monitorSchedulerListeners(String prefix, String titolo, List<SchedulerListener> schedulerListeners) {
+	public static void monitorSchedulerListeners(String prefix, String titolo, List<SchedulerListener> schedulerListeners) {
 		System.out.println(prefix+titolo+":");
 		prefix += "\t";
 		for (SchedulerListener schedulerListener : schedulerListeners){
@@ -115,7 +116,7 @@ public class QuartzMonitor extends QuartzMaster {
 		}
 	}
 
-	private void monitorJobListeners(String prefix, String titolo, List<JobListener> jobListeners) {
+	public static void monitorJobListeners(String prefix, String titolo, List<JobListener> jobListeners) {
 		System.out.println(prefix+titolo+":");
 		prefix += "\t";
 		for (JobListener jobListener : jobListeners){
@@ -123,7 +124,7 @@ public class QuartzMonitor extends QuartzMaster {
 		}
 	}
 
-	private void monitorJobGroupNames(String prefix, String titolo, List<String> jobGroupNames) throws SchedulerException {
+	public static void monitorJobGroupNames(String prefix, String titolo, List<String> jobGroupNames, Scheduler scheduler) throws SchedulerException {
 		GroupMatcher<JobKey> groupMatcher = null;
 
 		try {
@@ -164,7 +165,7 @@ public class QuartzMonitor extends QuartzMaster {
 //		}
 //	}
 
-	private void monitor(String prefix, String titolo, List<JobExecutionContext> currentlyExecutingJobs) {
+	public static void monitor(String prefix, String titolo, List<JobExecutionContext> currentlyExecutingJobs) {
 		System.out.println(prefix+titolo+":");
 		prefix += "\t";
 		for (JobExecutionContext currentlyExecutingJob : currentlyExecutingJobs){
@@ -186,7 +187,7 @@ public class QuartzMonitor extends QuartzMaster {
 		}
 	}
 
-	private void monitor(String prefix, String titolo, Trigger context) {
+	public static void monitor(String prefix, String titolo, Trigger context) {
 		System.out.println(prefix+titolo+":");
 		prefix += "\t";
 		monitor(prefix, "getCalendarName",context.getCalendarName());
@@ -205,28 +206,28 @@ public class QuartzMonitor extends QuartzMaster {
 		monitor(prefix, "getTriggerBuilder",context.getTriggerBuilder());
 	}
 
-	private void monitor(String prefix, String titolo, TriggerBuilder<? extends Trigger> triggerBuilder) {
+	public static void monitor(String prefix, String titolo, TriggerBuilder<? extends Trigger> triggerBuilder) {
 		System.out.println(prefix+titolo+":");
 		prefix += "\t";
 	}
 
-	private void monitor(String prefix, String titolo, ScheduleBuilder<? extends Trigger> scheduleBuilder) {
+	public static void monitor(String prefix, String titolo, ScheduleBuilder<? extends Trigger> scheduleBuilder) {
 		System.out.println(prefix+titolo+":");
 		prefix += "\t";
 	}
 
-	private void monitor(String prefix, String titolo, JobKey jobKey) {
+	public static void monitor(String prefix, String titolo, JobKey jobKey) {
 		System.out.println(prefix+titolo+":");
 		prefix += "\t";
 	}
 
-	private void monitor(String prefix, String titolo, Scheduler scheduler) {
+	public static void monitor(String prefix, String titolo, Scheduler scheduler) {
 		System.out.println(prefix+titolo+":");
 		prefix += "\t";
 //		monitor(prefix, "Group",context.getGroup());
 	}
 
-	private void monitorObject(String prefix, String titolo, Object context) {
+	public static void monitorObject(String prefix, String titolo, Object context) {
 		if (context instanceof String){
 			monitor(prefix, titolo, (String)context);
 		} else {
@@ -234,14 +235,14 @@ public class QuartzMonitor extends QuartzMaster {
 		}
 	}
 
-	private void monitor(String prefix, String titolo, TriggerKey context) {
+	public static void monitor(String prefix, String titolo, TriggerKey context) {
 		System.out.println(prefix+titolo+":");
 		prefix += "\t";
 		monitor(prefix, "Group",context.getGroup());
 		monitor(prefix, "Name",context.getName());
 	}
 
-	private void monitor(String prefix, String titolo, JobDataMap context) {
+	public static void monitor(String prefix, String titolo, JobDataMap context) {
 		String[] keys = null;
 		System.out.println(prefix+titolo+":");
 		prefix += "\t";
@@ -252,35 +253,35 @@ public class QuartzMonitor extends QuartzMaster {
 		
 	}
 
-	private void monitor(String prefix, String titolo, Job jobInstance) {
+	public static void monitor(String prefix, String titolo, Job jobInstance) {
 		System.out.println(prefix+titolo+": "+jobInstance);
 	}
 
-	private void monitor(String prefix, String titolo, Calendar calendar) {
+	public static void monitor(String prefix, String titolo, Calendar calendar) {
 		System.out.println(prefix+titolo+":");
 		prefix += "\t";
 		monitor(prefix, "BaseCalendar",calendar.getBaseCalendar());
 		monitor(prefix, "Description",calendar.getDescription());
 	}
 
-	private void monitor(String prefix, String titolo, JobDetail jobDetail) {
+	public static void monitor(String prefix, String titolo, JobDetail jobDetail) {
 		System.out.println(prefix+titolo+":");
 		prefix += "\t";
 		monitor(prefix, "Description",jobDetail.getDescription());
 	}
 
-	private void monitor(String prefix, String titolo, Date object) {
+	public static void monitor(String prefix, String titolo, Date object) {
 		SimpleDateFormat simpleDateFormat = null;
 		
 		simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		System.out.println(prefix+titolo+": "+(object != null?simpleDateFormat.format(object):"null"));
 	}
 
-	private void monitor(String prefix, String titolo, long object) {
+	public static void monitor(String prefix, String titolo, long object) {
 		System.out.println(prefix+titolo+": "+object);
 	}
 
-	private void monitor(String prefix, String titolo, SchedulerContext context) {
+	public static void monitor(String prefix, String titolo, SchedulerContext context) {
 		String[] keys = null;
 		System.out.println(prefix+titolo+":");
 		prefix += "\t";
@@ -290,11 +291,11 @@ public class QuartzMonitor extends QuartzMaster {
 		}
 	}
 
-	private void monitor(String prefix, String titolo, String object) {
+	public static void monitor(String prefix, String titolo, String object) {
 		System.out.println(prefix+titolo+": "+object);
 	}
 
-	private void monitorListString(String prefix, String titolo, List<String> calendarNames) {
+	public static void monitorListString(String prefix, String titolo, List<String> calendarNames) {
 		System.out.println(prefix+titolo+":");
 		prefix += "\t";
 		for (String calendarName : calendarNames){
@@ -302,8 +303,25 @@ public class QuartzMonitor extends QuartzMaster {
 		}
 	}
 
-	private void monitor(String prefix, String testo) {
+	public static void monitor(String prefix, String testo) {
 		System.out.println(prefix+testo);
+	}
+
+	public static void monitor(String prefix, String titolo, SchedulerMetaData metaData) {
+		System.out.println(prefix+titolo+":");
+		prefix += "\t";
+		monitor(prefix, "RunningSince",metaData.getRunningSince());
+		monitor(prefix, "SchedulerInstanceId",metaData.getSchedulerInstanceId());
+		monitor(prefix, "chedulerName",metaData.getSchedulerName());
+		try {
+			monitor(prefix, "Summary",metaData.getSummary());
+		} catch (SchedulerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		monitor(prefix, "Version",metaData.getVersion());
+		monitor(prefix, "NumberOfJobsExecuted",metaData.getNumberOfJobsExecuted());
+		monitor(prefix, "ThreadPoolSize",metaData.getThreadPoolSize());
 	}
 
 }

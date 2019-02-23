@@ -42,21 +42,35 @@ public class QuartzMaster {
 	 */
 	protected Scheduler scheduler = null;
 
-	/**
-	 * @throws SchedulerException 
-	 * 
-	 */
 	public QuartzMaster(boolean processing) throws SchedulerException {
-		this(null, processing, null, null, false, false);
+		this(null, processing, null, null, false, false, true);
 	}
 
 	/**
 	 * @throws SchedulerException 
 	 * 
 	 */
+	public QuartzMaster(boolean processing, boolean quartzScheduler) throws SchedulerException {
+		this(null, processing, null, null, false, false, quartzScheduler);
+	}
+
 	public QuartzMaster(boolean processing, String fileQuartz) 
+			throws SchedulerException {
+		this(null, processing, fileQuartz, null, false, false, true);
+	}
+
+	/**
+	 * @throws SchedulerException 
+	 * 
+	 */
+	public QuartzMaster(boolean processing, String fileQuartz, boolean quartzScheduler) 
 				throws SchedulerException {
-		this(null, processing, fileQuartz, null, false, false);
+		this(null, processing, fileQuartz, null, false, false, quartzScheduler);
+	}
+
+	public QuartzMaster(boolean processing, String fileQuartz, 
+			Integer socketPort, boolean closeSocket, boolean reScheduling) throws SchedulerException {
+		this(null, processing, fileQuartz, socketPort, closeSocket, reScheduling, true);
 	}
 
 	/**
@@ -64,64 +78,71 @@ public class QuartzMaster {
 	 * 
 	 */
 	public QuartzMaster(boolean processing, String fileQuartz, 
-			Integer socketPort, boolean closeSocket, boolean reScheduling) throws SchedulerException {
-		this(null, processing, fileQuartz, socketPort, closeSocket, reScheduling);
+			Integer socketPort, boolean closeSocket, boolean reScheduling, boolean quartzScheduler) throws SchedulerException {
+		this(null, processing, fileQuartz, socketPort, closeSocket, reScheduling, quartzScheduler);
 	}
 	
+	public QuartzMaster(Scheduler scheduler, boolean processing, 
+			String fileQuartz, Integer socketPort, boolean closeSocket, boolean reScheduling) throws SchedulerException {
+		this(scheduler, processing, fileQuartz, socketPort, closeSocket, reScheduling, true);
+	}
+
 	/**
 	 * @throws SchedulerException 
 	 * 
 	 */
 	public QuartzMaster(Scheduler scheduler, boolean processing, 
-			String fileQuartz, Integer socketPort, boolean closeSocket, boolean reScheduling) throws SchedulerException {
+			String fileQuartz, Integer socketPort, boolean closeSocket, boolean reScheduling, boolean quartzScheduler) throws SchedulerException {
 		StdSchedulerFactory sf = null;
 		
 		listJobs = new Hashtable<String, JobKey>();
 		if (!closeSocket){
-			if (scheduler == null){
-				if (fileQuartz != null){
-					sf = new StdSchedulerFactory(fileQuartz);
+			if (quartzScheduler) {
+				if (scheduler == null){
+					if (fileQuartz != null){
+						sf = new StdSchedulerFactory(fileQuartz);
+					} else {
+						sf = new StdSchedulerFactory();
+					}
+					this.scheduler = sf.getScheduler();
+					this.scheduler.getListenerManager().addTriggerListener(new TriggerListener(){
+	
+					    private Date lastFireTime = null;
+	
+					    @Override
+					    public String getName() {
+					        return "prevent-duplicate-fires";
+					    }
+	
+					    @Override
+					    public void triggerFired(Trigger trigger, JobExecutionContext context) {
+					    }
+	
+					    @Override
+					    public boolean vetoJobExecution(Trigger trigger, JobExecutionContext context) {
+					        final Date fireTime = context.getScheduledFireTime();
+					        if (lastFireTime != null && fireTime.equals(lastFireTime)) {
+					            return true;
+					        }
+					        lastFireTime = fireTime;
+					        return false;
+					    }
+	
+					    @Override
+					    public void triggerMisfired(Trigger trigger) {
+					    }
+	
+					    @Override
+					    public void triggerComplete(Trigger trigger, JobExecutionContext context, Trigger.CompletedExecutionInstruction triggerInstructionCode) {
+					    }
+					});
+	
 				} else {
-					sf = new StdSchedulerFactory();
+					this.scheduler = scheduler;
 				}
-				this.scheduler = sf.getScheduler();
-				this.scheduler.getListenerManager().addTriggerListener(new TriggerListener(){
-
-				    private Date lastFireTime = null;
-
-				    @Override
-				    public String getName() {
-				        return "prevent-duplicate-fires";
-				    }
-
-				    @Override
-				    public void triggerFired(Trigger trigger, JobExecutionContext context) {
-				    }
-
-				    @Override
-				    public boolean vetoJobExecution(Trigger trigger, JobExecutionContext context) {
-				        final Date fireTime = context.getScheduledFireTime();
-				        if (lastFireTime != null && fireTime.equals(lastFireTime)) {
-				            return true;
-				        }
-				        lastFireTime = fireTime;
-				        return false;
-				    }
-
-				    @Override
-				    public void triggerMisfired(Trigger trigger) {
-				    }
-
-				    @Override
-				    public void triggerComplete(Trigger trigger, JobExecutionContext context, Trigger.CompletedExecutionInstruction triggerInstructionCode) {
-				    }
-				});
-
-			} else {
-				this.scheduler = scheduler;
-			}
-			if (processing){
-				this.scheduler.start();
+				if (processing){
+					this.scheduler.start();
+				}
 			}
 		}
 		
