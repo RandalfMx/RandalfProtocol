@@ -9,9 +9,18 @@
   	<module>RandalfQuartzCore</module>
   	<module>RandalfSolrCore</module>
   	<module>RandalfCatSan</module>
-  	<module>RandalfHibernateSpring</module>
+  	<!-- module>RandalfHibernateSpring</module -->
   	<module>RandalfAmazonS3</module>
-  	<module>RandalfWsdl</module>
+  	<!-- module>RandalfWsdl</module -->
   	<module>RandalfGoogleXls</module>
+  	<module>RandalfSbnClient</module>
   </modules>
+    <distributionManagement>
+    <repository>
+        <id>mvn-bncf</id>
+        <name>Maven BNCF-releases</name>
+        <url>http://maven.bncf.firenze.sbn.it/artifactory/libs-release-local</url>
+    </repository>
+</distributionManagement>
+
 </project>
