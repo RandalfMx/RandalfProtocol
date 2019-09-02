@@ -207,6 +207,8 @@ public class QuartzMaster {
 	}
 
 	public void shutdown() throws SchedulerException{
+
+		System.out.println("SHUTDOWN ---------------- ");
 		shutdown = true;
 		this.scheduler.shutdown(true);
 	}

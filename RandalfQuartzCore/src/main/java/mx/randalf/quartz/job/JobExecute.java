@@ -43,7 +43,17 @@ public abstract class JobExecute implements Job {
 				context.getScheduler().unscheduleJob(context.getTrigger().getKey());
 			} else if (context.getScheduler().isShutdown()) {
 				context.setResult("Processo interrotto a causa dello spengimento del processo");
-				context.getScheduler().unscheduleJob(context.getTrigger().getKey());
+				try {
+					context.getScheduler().unscheduleJob(context.getTrigger().getKey());
+				} catch (SchedulerException e) {
+					if (e.getMessage().equalsIgnoreCase("The Scheduler has been shutdown.")) {
+						context.getScheduler().shutdown();
+//						context.getScheduler().resumeTrigger(context.getTrigger().getKey());
+					} else {
+						throw e;
+						
+					}
+				}
 			}
 		} catch (JobExecutionException e) {
 			e.setUnscheduleAllTriggers(true);

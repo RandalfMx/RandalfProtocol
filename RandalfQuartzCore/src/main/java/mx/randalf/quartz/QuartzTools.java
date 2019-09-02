@@ -51,7 +51,7 @@ public class QuartzTools {
 			Hashtable<String, Object> params,
 			ScheduleBuilder<?> schedBuilder) 
 			throws SchedulerException{
-		return startJob(scheduler, jClass, jobGroup, jobName, triggerGroup, triggerName, params, null, null);
+		return startJob(scheduler, jClass, jobGroup, jobName, triggerGroup, triggerName, params, schedBuilder, null);
 	}
 
 	public static JobKey startJob(Scheduler scheduler, Class<? extends JobExecute> jClass, 
@@ -173,7 +173,7 @@ public class QuartzTools {
 
 		try {
 			if (scheduler.isShutdown()){
-				System.out.println("IN SHUTDOWN");
+				System.out.println("IN SHUTDOWN " + jobKey.getGroup()+"/"+jobKey.getName()+" - "+triggerKey.getGroup()+"/"+triggerKey.getName());
 				conta = -1;
 			} else if (scheduler.isStarted()){
 				jobs = scheduler.getCurrentlyExecutingJobs();

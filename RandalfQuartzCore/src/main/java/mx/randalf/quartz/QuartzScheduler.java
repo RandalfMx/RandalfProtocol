@@ -74,6 +74,10 @@ public abstract class QuartzScheduler extends QuartzMaster {
 	}
 
 	public void print() throws SchedulerException{
+		print(true);
+	}
+
+	public void print(boolean shutdown) throws SchedulerException{
 		String jobName = null;
 		String jobGroup = null;
 
@@ -94,7 +98,9 @@ public abstract class QuartzScheduler extends QuartzMaster {
 		} catch (SchedulerException e) {
 			throw e;
 		} finally {
-			scheduler.shutdown();
+			if (shutdown) {
+				scheduler.shutdown();
+			}
 		}
 	}
 
