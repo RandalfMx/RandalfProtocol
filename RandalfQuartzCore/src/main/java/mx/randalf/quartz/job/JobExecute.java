@@ -74,6 +74,14 @@ public abstract class JobExecute implements Job {
 	protected abstract String jobExecute(JobExecutionContext context) throws JobExecutionException;
 
 	protected void waithEndJobs(JobExecutionContext context) {
+		int conta = 0;
+		System.out.println("waithEndJobs ");
+		if (context != null &&
+				context.getJobDetail() != null &&
+				context.getJobDetail().getKey() != null) {
+			System.out.println("group: "+context.getJobDetail().getKey().getGroup()+
+				" name: "+context.getJobDetail().getKey().getName());
+		}
 		while (true) {
 			for (int x = 0; x < listJobs.size(); x++) {
 				try {
@@ -86,14 +94,35 @@ public abstract class JobExecute implements Job {
 			}
 			if (listJobs.size() == 0) {
 				break;
+			} else if (listJobs.size() == 1 && itsMe(context)) {
+				break;
 			} else {
 				try {
+					conta++;
+					if ((conta%100)==0) {
+						System.out.println("listJobs count: "+listJobs.size());
+						conta=0;
+					}
 					Thread.sleep(10000);
 				} catch (InterruptedException e) {
 					log.error("[" + QuartzTools.getName(context) + "] " + e.getMessage(), e);
 				}
 			}
 		}
+	}
+
+	private boolean itsMe(JobExecutionContext context) {
+		boolean result = false;
+		
+		if (context != null &&
+				context.getJobDetail() != null &&
+				context.getJobDetail().getKey() != null) {
+			if (listJobs.get(0).getGroup().equals(context.getJobDetail().getKey().getGroup()) &&
+					listJobs.get(0).getName().equals(context.getJobDetail().getKey().getName())) {
+				result = true;
+			}
+		}
+		return result;
 	}
 
 	protected void start(JobExecutionContext context, Class<? extends JobExecute> jClass, String jobGroup,
