@@ -38,6 +38,7 @@ public class RandalfMetadata {
 
 	private List<String> dates = null;
 
+	private String typeId = null;
 	private List<String> types = null;
 
 	private List<String> formats = null;
@@ -57,17 +58,17 @@ public class RandalfMetadata {
 	/**
 	 * 
 	 */
-	public RandalfMetadata(Record record) {
-		analizza(record);
+	public RandalfMetadata(Record record, String idIstituto) {
+		analizza(record,  idIstituto);
 	}
 
-	private void analizza(Record record) {
+	private void analizza(Record record, String idIstituto) {
 
 		checkLevel(record);
 		checkTitle(record);
 		checkCreator(record);
 		checkSubject(record);
-		checkDescription(record);
+		checkDescription(record, idIstituto);
 		checkPublisher(record);
 		checkContributor(record);
 		checkDate(record);
@@ -188,26 +189,26 @@ public class RandalfMetadata {
 				}
 			}
 		} else {
-			dataFields = record.getVariableFields("102");
-			i = dataFields.iterator();
-			while (i.hasNext()) {
-				testo = "";
-				dataField = (DataField) i.next();
-				subfields = dataField.getSubfields("a");
-				for (Subfield subfield : subfields) {
-					if (!testo.trim().equals("")) {
-						testo += " ";
-					}
-					testo += subfield.getData();
-				}
-
-				if (!testo.trim().equals("")) {
-					if (coverages == null) {
-						coverages = new Vector<String>();
-					}
-					coverages.add(testo);
-				}
-			}
+//			dataFields = record.getVariableFields("102");
+//			i = dataFields.iterator();
+//			while (i.hasNext()) {
+//				testo = "";
+//				dataField = (DataField) i.next();
+//				subfields = dataField.getSubfields("a");
+//				for (Subfield subfield : subfields) {
+//					if (!testo.trim().equals("")) {
+//						testo += " ";
+//					}
+//					testo += subfield.getData();
+//				}
+//
+//				if (!testo.trim().equals("")) {
+//					if (coverages == null) {
+//						coverages = new Vector<String>();
+//					}
+//					coverages.add(testo);
+//				}
+//			}
 
 			dataFields = record.getVariableFields("102");
 			i = dataFields.iterator();
@@ -304,10 +305,36 @@ public class RandalfMetadata {
 				}
 			}
 		} else {
+			
+			dataFields = record.getVariableFields("517");
+			i = dataFields.iterator();
+			while (i.hasNext()) {
+				testo = "";
+				dataField = (DataField) i.next();
+				subfields = dataField.getSubfields("a");
+				for (Subfield subfield : subfields) {
+					if (!testo.trim().equals("")) {
+						testo += " ";
+					}
+					testo += subfield.getData();
+				}
+
+				if (!testo.trim().equals("")) {
+					if (relations == null) {
+						relations = new Vector<String>();
+					}
+					relations.add("'variante del titolo:' "+testo.trim());
+				}
+			}
+			
+			
+			
+			
+			
 			String[] tags = { "410", "411", "412", "413", "421", "422", "423", "424", "425", "430", "431", "432", "433",
 					"434", "435", "436", "437", "440", "441", "442", "443", "444", "445", "446", "447", "448", "451",
 					"452", "453", "454", "455", "456", "461", "462", "463", "464", "470", "481", "482", "488", "500",
-					"501", "503", "510", "511", "512", "513", "514", "515", "516", "517", "518", "520", "530", "531",
+					"501", "503", "510", "511", "512", "513", "514", "515", "516", "518", "520", "530", "531",
 					"532", "540", "541", "545", "560" };
 			dataFields = record.getVariableFields(tags);
 			i = dataFields.iterator();
@@ -661,9 +688,10 @@ public class RandalfMetadata {
 	private void checkType(Record record) {
 		String testo = null;
 
+		typeId= new Character(record.getLeader().getTypeOfRecord()).toString();
 		switch (record.getLeader().getTypeOfRecord()) {
 		case 'a':
-			testo = "materiale a stampa";
+			testo = "testo a stampa";
 			break;
 		case 'b':
 			testo = "materiale manoscritto";
@@ -940,12 +968,14 @@ public class RandalfMetadata {
 
 	}
 
-	private void checkDescription(Record record) {
+	private void checkDescription(Record record, String idIstituto) {
 		List dataFields = null;
 		DataField dataField = null;
 		Iterator i = null;
 		List<Subfield> subfields = null;
 		String testo = null;
+		String testo2 = null;
+		String testo300 = "";
 
 		// Verifica per "Non qualificato"
 		dataFields = record.getVariableFields("300");
@@ -962,11 +992,18 @@ public class RandalfMetadata {
 			}
 
 			if (!testo.trim().equals("")) {
-				if (descriptions == null) {
-					descriptions = new Vector<String>();
+				if (!testo300.equals("")) {
+					testo300 += " ; ";
 				}
-				descriptions.add(testo);
+				testo300 += testo;
 			}
+		}
+
+		if (!testo300.trim().equals("")) {
+			if (descriptions == null) {
+				descriptions = new Vector<String>();
+			}
+			descriptions.add(testo300);
 		}
 
 		dataFields = record.getVariableFields("330");
@@ -987,6 +1024,37 @@ public class RandalfMetadata {
 					descriptions = new Vector<String>();
 				}
 				descriptions.add(testo);
+			}
+		}
+
+		dataFields = record.getVariableFields("899");
+		i = dataFields.iterator();
+		while (i.hasNext()) {
+			testo = "";
+			testo2 = "";
+			dataField = (DataField) i.next();
+			subfields = dataField.getSubfields("1");
+			for (Subfield subfield : subfields) {
+				if (!testo.trim().equals("")) {
+					testo += " ";
+				}
+				testo += subfield.getData();
+			}
+			subfields = dataField.getSubfields("4");
+			for (Subfield subfield : subfields) {
+				if (!testo2.trim().equals("")) {
+					testo2 += " ";
+				}
+				testo2 += subfield.getData();
+			}
+
+			if (!testo2.trim().equals("") &&
+					!testo.trim().equals("") &&
+					testo.trim().equalsIgnoreCase(idIstituto)) {
+				if (descriptions == null) {
+					descriptions = new Vector<String>();
+				}
+				descriptions.add("[consistenza] "+testo2);
 			}
 		}
 	}
@@ -1351,23 +1419,23 @@ public class RandalfMetadata {
 			titles.add(title);
 		}
 
-		dataFields = record.getVariableFields("517");
-		i = dataFields.iterator();
-		while (i.hasNext()) {
-			title = "";
-			dataField = (DataField) i.next();
-			subfields = dataField.getSubfields("a");
-			for (Subfield subfield : subfields) {
-				if (!title.trim().equals("")) {
-					title += " ";
-				}
-				title += subfield.getData();
-			}
-			if (titles == null) {
-				titles = new Vector<String>();
-			}
-			titles.add(title);
-		}
+//		dataFields = record.getVariableFields("517");
+//		i = dataFields.iterator();
+//		while (i.hasNext()) {
+//			title = "";
+//			dataField = (DataField) i.next();
+//			subfields = dataField.getSubfields("a");
+//			for (Subfield subfield : subfields) {
+//				if (!title.trim().equals("")) {
+//					title += " ";
+//				}
+//				title += subfield.getData();
+//			}
+//			if (titles == null) {
+//				titles = new Vector<String>();
+//			}
+//			titles.add(title);
+//		}
 
 		dataFields = record.getVariableFields("500");
 		i = dataFields.iterator();
@@ -1442,6 +1510,9 @@ public class RandalfMetadata {
 		return types;
 	}
 
+	public String getTypesId() {
+		return typeId;
+	}
 	public List<String> getFormats() {
 		return formats;
 	}

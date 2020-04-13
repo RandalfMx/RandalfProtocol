@@ -10,7 +10,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.marc4j.MarcException;
 import org.marc4j.MarcReader;
 import org.marc4j.MarcStreamReader;
@@ -26,7 +27,7 @@ import mx.randalf.protocol.sbn.metadata.RandalfMetadata;
  */
 public class RandalfSbnClient {
 
-	private Logger log = Logger.getLogger(RandalfSbnClient.class);
+	private Logger log = LogManager.getLogger(RandalfSbnClient.class);
 
 	private String urlOpacSbn = "https://opac.sbn.it/opacsbn/opaclib";
 
@@ -103,7 +104,7 @@ public class RandalfSbnClient {
 		return reader;
 	}
 
-	public Vector<RandalfMetadata> bidToMetaData(String bid) throws MalformedURLException, IOException {
+	public Vector<RandalfMetadata> bidToMetaData(String bid, String idIstituto) throws MalformedURLException, IOException {
 		MarcReader reader = null;
 		Record record = null;
 		Vector<RandalfMetadata> metaDatas = null;
@@ -114,7 +115,7 @@ public class RandalfSbnClient {
 			while (reader.hasNext()) {
 				try {
 					record = reader.next();
-					metaDatas.add(new RandalfMetadata(record));
+					metaDatas.add(new RandalfMetadata(record, idIstituto));
 				} catch(MarcException e) {
 				}
 			}

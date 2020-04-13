@@ -33,7 +33,7 @@ public class RandalfSbnClientTest {
 		try {
 			randalfSbnClient = new RandalfSbnClient();
 //			randalfSbnClient.bidMarc("IEI0111767", "IEI0111767.mrc");
-			randalfMetadatas = randalfSbnClient.bidToMetaData("IEI0111767");
+			randalfMetadatas = randalfSbnClient.bidToMetaData("TSA1342643", "TS0013");
 			for (RandalfMetadata randalfMetadata: randalfMetadatas) {
 				System.out.println("-------------------");
 				print(randalfMetadata.getContributors(),"Contributors");
