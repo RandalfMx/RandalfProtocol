@@ -8,7 +8,8 @@ import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
@@ -18,6 +19,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
+//import org.hibernate.query.NativeQuery;
 
 import mx.randalf.hibernate.exception.HibernateUtilException;
 
@@ -27,7 +29,7 @@ import mx.randalf.hibernate.exception.HibernateUtilException;
  */
 public abstract class GenericHibernateDAO<T, ID extends Serializable> implements GenericDAO<T, ID> {
 
-	private static final Logger log = Logger.getLogger(GenericHibernateDAO.class);
+	private static final Logger log = LogManager.getLogger(GenericHibernateDAO.class);
 
 	private Session session = null;
 
@@ -365,6 +367,7 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable> implements
 	}
 
 	public Criteria createCriteria() {
+		
 		return session.createCriteria(getPersistentClass());
 	}
 
@@ -389,6 +392,7 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable> implements
 	}
 
 	public int executeUpdate(String sql) throws HibernateException {
+//		NativeQuery query = null;
 		SQLQuery query = null;
 		int result = 0;
 
