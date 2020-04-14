@@ -21,7 +21,9 @@ import io.minio.errors.InvalidBucketNameException;
 import io.minio.errors.InvalidEndpointException;
 import io.minio.errors.InvalidExpiresRangeException;
 import io.minio.errors.InvalidPortException;
+import io.minio.errors.InvalidResponseException;
 import io.minio.errors.NoResponseException;
+import io.minio.errors.RegionConflictException;
 import io.minio.messages.Bucket;
 import io.minio.messages.Item;
 import io.minio.messages.Upload;
@@ -136,6 +138,10 @@ public class MinioTest {
 //		} catch (InvalidArgumentException e) {
 //			e.printStackTrace();
 		} catch (InvalidExpiresRangeException e) {
+			e.printStackTrace();
+		} catch (InvalidResponseException e) {
+			e.printStackTrace();
+		} catch (RegionConflictException e) {
 			e.printStackTrace();
 		}
 	}

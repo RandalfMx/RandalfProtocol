@@ -17,27 +17,27 @@
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk</artifactId>
-			<version>1.11.250</version>
+			<version>1.11.750</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.cloud</groupId>
 			<artifactId>google-cloud-storage</artifactId>
-			<version>0.6.0</version>
+			<version>1.106.0</version>
 		</dependency>
 		<dependency>
 			<groupId>io.minio</groupId>
 			<artifactId>minio</artifactId>
-			<version>2.0.4</version>
+			<version>6.0.13</version>
 		</dependency>
 		<dependency>
 			<groupId>mx.randalf.digest</groupId>
 			<artifactId>RandalfDigest</artifactId>
-			<version>1.0.4</version>
+			<version>2.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.13.1</version>
 		</dependency>
 	</dependencies>
 	<distributionManagement>
@@ -47,5 +47,5 @@
 			<url>http://maven.bncf.firenze.sbn.it/artifactory/libs-release-local</url>
 		</repository>
 	</distributionManagement>
-	<version>1.0.2</version>
+	<version>2.0.0</version>
 </project>

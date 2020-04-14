@@ -51,9 +51,13 @@ public class GoogleCloudStorageTest {
 			helper = RemoteStorageHelper.create();
 			storage = helper.getOptions().getService();
 			storageOptions = storage.getOptions();
-			System.out.println("connectTimeout: " + storageOptions.connectTimeout() + "\r\tgetApplicationName: "
+//			System.out.println("connectTimeout: " + storageOptions.connectTimeout() + "\r\tgetApplicationName: "
+//					+ storageOptions.getApplicationName() + "\r\tgetClock: " + storageOptions.getClock()
+//					+ "\r\tgetConnectTimeout: " + storageOptions.getConnectTimeout() + "\r\tgetCredentials: "
+//					+ storageOptions.getCredentials() + "\r\tgetHost: " + storageOptions.getHost());
+			System.out.println("getApplicationName: "
 					+ storageOptions.getApplicationName() + "\r\tgetClock: " + storageOptions.getClock()
-					+ "\r\tgetConnectTimeout: " + storageOptions.getConnectTimeout() + "\r\tgetCredentials: "
+					 + "\r\tgetCredentials: "
 					+ storageOptions.getCredentials() + "\r\tgetHost: " + storageOptions.getHost());
 
 			blobId = BlobId.of(bucketName, blobName);

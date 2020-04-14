@@ -22,7 +22,9 @@ import io.minio.errors.InvalidArgumentException;
 import io.minio.errors.InvalidBucketNameException;
 import io.minio.errors.InvalidEndpointException;
 import io.minio.errors.InvalidPortException;
+import io.minio.errors.InvalidResponseException;
 import io.minio.errors.NoResponseException;
+import io.minio.errors.RegionConflictException;
 import io.minio.messages.Item;
 import mx.randalf.protocol.amazonS3.exception.RandalfAmazonS3Exception;
 import mx.randalf.protocol.amazonS3.interfaces.IRandalfAmazonS3;
@@ -56,7 +58,11 @@ public class RandalfAmazonS3Minio extends IRandalfAmazonS3<MinioClient> {
 		boolean result = false;
 
 		try {
-			minioClient.putObject(bucketName, fileOutput, fileInput.getAbsolutePath());
+			//String bucketName, String objectName, String fileName,  Long size,
+            //Map<String, String> headerMap, ServerSideEncryption sse, String contentType
+			minioClient.putObject(bucketName, fileOutput, fileInput.getAbsolutePath(),
+					fileInput.length(), null, null, contentType);
+//			                     (bucketName, fileOutput, fileInput.getAbsolutePath());
 			result = true;
 		} catch (InvalidKeyException e) {
 			throw new RandalfAmazonS3Exception(e.getMessage(), e);
@@ -77,6 +83,8 @@ public class RandalfAmazonS3Minio extends IRandalfAmazonS3<MinioClient> {
 		} catch (IOException e) {
 			throw new RandalfAmazonS3Exception(e.getMessage(), e);
 		} catch (XmlPullParserException e) {
+			throw new RandalfAmazonS3Exception(e.getMessage(), e);
+		} catch (InvalidResponseException e) {
 			throw new RandalfAmazonS3Exception(e.getMessage(), e);
 		}
 		return result;
@@ -156,6 +164,10 @@ public class RandalfAmazonS3Minio extends IRandalfAmazonS3<MinioClient> {
 		} catch (IOException e) {
 			throw new RandalfAmazonS3Exception(e.getMessage(), e);
 		} catch (XmlPullParserException e) {
+			throw new RandalfAmazonS3Exception(e.getMessage(), e);
+		} catch (InvalidResponseException e) {
+			throw new RandalfAmazonS3Exception(e.getMessage(), e);
+		} catch (RegionConflictException e) {
 			throw new RandalfAmazonS3Exception(e.getMessage(), e);
 		}
 

@@ -6,7 +6,8 @@ package mx.randalf.protocol.amazonS3.amazonaws;
 import java.io.File;
 import java.io.InputStream;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.ClientConfiguration;
@@ -32,7 +33,7 @@ import mx.randalf.protocol.amazonS3.interfaces.IRandalfAmazonS3;
  */
 public class RandalfAmazonS3Aws extends IRandalfAmazonS3<AmazonS3> {
 
-	private Logger log = Logger.getLogger(RandalfAmazonS3Aws.class);
+	private Logger log = LogManager.getLogger(RandalfAmazonS3Aws.class);
 
 	//	private String profileName = null;
 	private String endPoint = null;
