@@ -10,7 +10,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;
 
@@ -21,7 +22,7 @@ import org.apache.solr.common.SolrInputDocument;
  */
 public class Item {
 
-	private static Logger log = Logger.getLogger(Item.class);
+	private static Logger log = LogManager.getLogger(Item.class);
 
 	/**
 	 * Campo relativo alla Versione necessario per la gestione del motore SolrCloud

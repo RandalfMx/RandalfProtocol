@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.io.Writer;
 import java.net.MalformedURLException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.ResponseParser;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.BinaryResponseParser;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 //import org.apache.solr.client.solrj.impl.HttpSolrClient.Builder;
 import org.apache.solr.client.solrj.impl.XMLResponseParser;
@@ -20,7 +20,7 @@ import mx.randalf.solr.exception.SolrException;
 
 public class SolrCoreStandardServer extends SolrCoreServer<HttpSolrClient>{
 
-	private Logger log = Logger.getLogger(SolrCoreStandardServer.class);
+	private Logger log = LogManager.getLogger(SolrCoreStandardServer.class);
 
 	/**
 	 * Timeout di connessione in Millisecondi
@@ -49,25 +49,22 @@ public class SolrCoreStandardServer extends SolrCoreServer<HttpSolrClient>{
 	 */
 	protected HttpSolrClient open(String url) throws SolrException {
 		HttpSolrClient server = null;
-//		Builder builder = null;
+		HttpSolrClient.Builder builder = null;
 
-//		builder = new Builder(url);
-//		server = builder.build();
-		server = new HttpSolrClient(url);
-		server.setSoTimeout(soTimeout); // socket read timeout
-		server.setConnectionTimeout(connectionTimeout);
-		server.setDefaultMaxConnectionsPerHost(100);
-		server.setMaxTotalConnections(100);
-		server.setFollowRedirects(false); // defaults to false
+		builder = new HttpSolrClient.Builder(url);
+		builder.withSocketTimeout(soTimeout); // socket read timeout
+		builder.withConnectionTimeout(connectionTimeout);
+//		builder.setDefaultMaxConnectionsPerHost(100);
+//		builder.setMaxTotalConnections(100);
+		builder.allowCompression(true);
+		
+		server = builder.build();
+		server.setFollowRedirects(false); 	// defaults to false
 											// allowCompression defaults to
 											// false.
 											// Server side must support gzip or
 											// deflate for this to have any
 											// effect.
-		server.setAllowCompression(true);
-//MX		server.setMaxRetries(1); // defaults to 0. > 1 not recommended.
-		// server.setParser(new XMLResponseParser()); // binary parser is used
-		// by default return server;
 		return server;
 	}
 

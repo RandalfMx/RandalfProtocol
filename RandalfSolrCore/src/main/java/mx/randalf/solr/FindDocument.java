@@ -10,7 +10,8 @@ import java.util.Vector;
 
 import mx.randalf.solr.exception.SolrException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.SortClause;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -28,7 +29,7 @@ public class FindDocument extends SolrCore {
 	/**
 	 * Questa variabile viene utilizzata per loggare l'applicazione
 	 */
-	private Logger log = Logger.getLogger(FindDocument.class);
+	private Logger log = LogManager.getLogger(FindDocument.class);
 
 	/**
 	 * Variabile utilizzata per indicare se utilizzare la gestione delle faccette
@@ -69,8 +70,8 @@ public class FindDocument extends SolrCore {
 	 * @throws SolrException
 	 *             Gestione degli errori con il database Solr
 	 */
-	public FindDocument(String url, boolean cloud, String collection) throws SolrException {
-		super(url, cloud, collection);
+	public FindDocument(String url, boolean cloud, String collection, String optional) throws SolrException {
+		super(url, cloud, collection, optional);
 	}
 
 	/**
@@ -90,8 +91,8 @@ public class FindDocument extends SolrCore {
 	 *             Gestione degli errori con il database Solr
 	 */
 	public FindDocument(String url, boolean cloud, String collection, int connectionTimeout,
-			int clientTimeout) throws SolrException {
-		super(url, cloud, collection, connectionTimeout, clientTimeout);
+			int clientTimeout, String optional) throws SolrException {
+		super(url, cloud, collection, connectionTimeout, clientTimeout, optional);
 	}
 
 	/**

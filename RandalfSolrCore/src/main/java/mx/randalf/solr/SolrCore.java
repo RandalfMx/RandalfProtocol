@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.request.AbstractUpdateRequest.ACTION;
 import org.apache.solr.client.solrj.request.UpdateRequest;
@@ -38,7 +39,7 @@ class SolrCore {
 	/**
 	 * Variabile utilizzata per loggare l'applicazione
 	 */
-	private Logger log = Logger.getLogger(SolrCore.class);
+	private Logger log = LogManager.getLogger(SolrCore.class);
 
 	private String id= null;
 
@@ -65,11 +66,11 @@ class SolrCore {
 	 *             Gestione degli errori con il database Solr
 	 */
 	public SolrCore(String url, boolean cloud, String collection, int connectionTimeout,
-			int clientTimeout) throws SolrException {
+			int clientTimeout, String optional) throws SolrException {
 		
 		
 		if (cloud){
-			server = new SolrCoreCloudServer(connectionTimeout, clientTimeout, collection, url);
+			server = new SolrCoreCloudServer(connectionTimeout, clientTimeout, collection, url, optional);
 		} else {
 			server = new SolrCoreStandardServer(connectionTimeout, clientTimeout, url);
 		}
@@ -87,8 +88,8 @@ class SolrCore {
 	 * @throws SolrException
 	 *             Gestione degli errori con il database Solr
 	 */
-	public SolrCore(String url, boolean cloud, String collection) throws SolrException {
-		this(url, cloud, collection, 60000, 100000);
+	public SolrCore(String url, boolean cloud, String collection, String optional) throws SolrException {
+		this(url, cloud, collection, 60000, 100000, optional);
 	}
 
 	/**

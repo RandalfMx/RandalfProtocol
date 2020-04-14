@@ -2,14 +2,17 @@ package mx.randalf.solr;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.ResponseParser;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.apache.solr.client.solrj.impl.XMLResponseParser;
-//import org.apache.solr.client.solrj.impl.CloudSolrClient.Builder;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrDocumentList;
@@ -22,7 +25,7 @@ public class SolrCoreCloudServer extends SolrCoreServer<CloudSolrClient>{
 	/**
 	 * Variabile utilizzata per loggare l'applicazione
 	 */
-	private Logger log = Logger.getLogger(SolrCoreCloudServer.class);
+	private Logger log = LogManager.getLogger(SolrCoreCloudServer.class);
 
 	/**
 	 * Timeout di connessione in Millisecondi
@@ -36,10 +39,26 @@ public class SolrCoreCloudServer extends SolrCoreServer<CloudSolrClient>{
 
 	private String collection = null;
 	
-	public SolrCoreCloudServer(int connectionTimeout, int zkClientTimeout, String collection, String url) throws SolrException{
+	private String optional = null;
+	
+	/**
+	 * 
+	 * @param connectionTimeout TimeOut del sever Solr
+	 * @param zkClientTimeout TimeOut di connessione del Client Zookeeper
+	 * @param collection Nome della collection di default relativa al server Solr
+	 * @param url
+	 *            Url per la connessione con il Server ZooKeeper necessario per
+	 *            ricavare la configurazione dei server cloud 
+	 *            (Es. <Server01>:2181,<Server02>:2181,<Server03>:2181)
+	 * @param optional Percorso relativi hai server Zookeeper in cui viene 
+	 *            riportata la configurazione dei server Solr (Es. /mwSolr)
+	 * @throws SolrException
+	 */
+	public SolrCoreCloudServer(int connectionTimeout, int zkClientTimeout, String collection, String url, String optional) throws SolrException{
 		this.connectionTimeout = connectionTimeout;
 		this.zkClientTimeout = zkClientTimeout;
 		this.collection = collection;
+		this.optional = optional;
 		server = open(url);
 	}
 
@@ -47,20 +66,29 @@ public class SolrCoreCloudServer extends SolrCoreServer<CloudSolrClient>{
 	 * 
 	 * @param url
 	 *            Url per la connessione con il Server ZooKeeper necessario per
-	 *            ricavare la configurazione dei server cloud
+	 *            ricavare la configurazione dei server cloud 
+	 *            (Es. <Server01>:2181,<Server02>:2181,<Server03>:2181)
 	 * @return Connessione con il Server
 	 * @throws SolrException
 	 *             Gestione degli errori con il database Solr
 	 */
 	protected CloudSolrClient open(String url) throws SolrException {
 		CloudSolrClient server = null;
-//		Builder build  = null;
+		CloudSolrClient.Builder builder = null;
+		List<String> zkServers = null;
+		String[] st = null;
 
 		try {
-//			build = new Builder();
-//			server = build.withZkChroot(url).build();
-//			build.
-			server = new CloudSolrClient(url);
+
+			zkServers = new ArrayList<String>();
+			
+			st = url.trim().split(",");
+			for (int x=0; x<st.length; x++) {
+				zkServers.add(st[x].trim());
+			}
+
+			builder = new CloudSolrClient.Builder(zkServers, Optional.of(optional));
+			server = builder.build();
 			server.setDefaultCollection(collection);
 			server.setZkClientTimeout(zkClientTimeout);
 			server.setZkConnectTimeout(connectionTimeout);
