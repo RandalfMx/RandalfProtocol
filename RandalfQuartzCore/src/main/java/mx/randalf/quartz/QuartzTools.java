@@ -12,7 +12,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobKey;
@@ -32,7 +33,7 @@ import mx.randalf.quartz.job.JobExecute;
  */
 public class QuartzTools {
 
-	private static Logger log = Logger.getLogger(QuartzTools.class);
+	private static Logger log = LogManager.getLogger(QuartzTools.class);
 
 	/**
 	 * 

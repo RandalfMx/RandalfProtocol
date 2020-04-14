@@ -7,7 +7,8 @@ import java.io.File;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -26,7 +27,7 @@ public abstract class QuartzExecute{
 	/**
 	 * Variabile utilizzata per loggare l'applicazione
 	 */
-	private static Logger log = Logger.getLogger(QuartzExecute.class);
+	private static Logger log = LogManager.getLogger(QuartzExecute.class);
 
 	/**
 	 * Variabile utilizzata per la gestione della schedurlazione delle attività

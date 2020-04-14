@@ -7,7 +7,8 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
@@ -25,7 +26,7 @@ public class QuartzMaster {
 	
 	private Hashtable<String, JobKey> listJobs = null;
 
-	private static Logger log = Logger.getLogger(QuartzMaster.class);
+	private static Logger log = LogManager.getLogger(QuartzMaster.class);
 
 //	private Integer nThread = 10;
 //
