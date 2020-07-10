@@ -10,16 +10,18 @@ import java.util.Hashtable;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import mx.randalf.configuration.exception.ConfigurationException;
-import mx.randalf.hibernate.exception.HibernateUtilException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.service.ServiceRegistry;
+
+import mx.randalf.configuration.exception.ConfigurationException;
+import mx.randalf.hibernate.exception.HibernateUtilException;
 
 /**
  * @author massi
@@ -37,9 +39,9 @@ public class HibernateUtil {
 
 	private static Hashtable<String, HibernateUtil> instance = null;
 
-	@SuppressWarnings("deprecation")
 	private HibernateUtil(String fileHibernate) throws HibernateException, HibernateUtilException
 	{
+	  ServiceRegistry serviceRegistry = null;
 		Hashtable<?, ?> lists = null;
 		Enumeration<?> keys = null;
 		Object key = null;
@@ -63,7 +65,12 @@ public class HibernateUtil {
 			try {
 				conf = new org.hibernate.cfg.Configuration();
 				configuration = conf.configure(f);
-				sessionFactory = configuration.buildSessionFactory();
+
+//				serviceRegistry = new StandardServiceRegistryBuilder().applySettings(
+//				    configuration.getProperties()).build();
+				
+//				sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+        sessionFactory = configuration.buildSessionFactory();
 			} catch (HibernateException e) {
 				log.error(e.getMessage(), e);
 			}
