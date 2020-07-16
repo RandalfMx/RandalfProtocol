@@ -229,6 +229,7 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable> implements
 				}
 				paging(crit);
 				result = crit.list();
+				postFind(result);
 				commitTransaction();
 			} catch (HibernateException ex) {
 				rollbackTransaction();
@@ -252,7 +253,18 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable> implements
 		return result;
 	}
 
-	protected void initTableJoin(Criteria crit) {
+	private void postFind(List<T> result) {
+	  if (result != null) {
+	    for (T t : result) {
+	      postFind(t);
+	    }
+	  }
+  }
+
+  protected void postFind(T t) {
+  }
+
+  protected void initTableJoin(Criteria crit) {
 	}
 
 	public T findById(ID id) throws HibernateException, HibernateUtilException {
@@ -278,6 +290,7 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable> implements
 				crit.add(Restrictions.eq("id", id));
 				paging(crit);
 				result = (T) crit.uniqueResult();
+				postFind(result);
 				commitTransaction();
 			} catch (HibernateException ex) {
 				rollbackTransaction();

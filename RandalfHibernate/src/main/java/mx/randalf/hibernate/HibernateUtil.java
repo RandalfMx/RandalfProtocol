@@ -32,7 +32,7 @@ public class HibernateUtil {
 
 	private Object SyncObj = new Object();
 
-	private SessionFactory sessionFactory = null;
+	private static SessionFactory sessionFactory = null;
 
 	private final ThreadLocal<Session> sessionTable = new ThreadLocal<Session>();
 	private final ThreadLocal<Transaction> transactionTable = new ThreadLocal<Transaction>();
@@ -66,11 +66,11 @@ public class HibernateUtil {
 				conf = new org.hibernate.cfg.Configuration();
 				configuration = conf.configure(f);
 
-//				serviceRegistry = new StandardServiceRegistryBuilder().applySettings(
-//				    configuration.getProperties()).build();
+				serviceRegistry = new StandardServiceRegistryBuilder().applySettings(
+				    configuration.getProperties()).build();
 				
-//				sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-        sessionFactory = configuration.buildSessionFactory();
+				sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+//        sessionFactory = configuration.buildSessionFactory();
 			} catch (HibernateException e) {
 				log.error(e.getMessage(), e);
 			}
@@ -272,7 +272,11 @@ public class HibernateUtil {
 		return instance.get(fileHibernate);
 	}
 
-	private SessionFactory getSessionFactory() {
+	private static SessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
-}
+
+  public static void shutdown()
+  {
+     getSessionFactory().close();
+  }}
