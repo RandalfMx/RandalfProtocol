@@ -8,8 +8,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
@@ -29,7 +28,7 @@ import mx.randalf.hibernate.exception.HibernateUtilException;
  */
 public abstract class GenericHibernateDAO<T, ID extends Serializable> implements GenericDAO<T, ID> {
 
-	private static final Logger log = LogManager.getLogger(GenericHibernateDAO.class);
+	private static final Logger log = Logger.getLogger(GenericHibernateDAO.class);
 
 	private Session session = null;
 

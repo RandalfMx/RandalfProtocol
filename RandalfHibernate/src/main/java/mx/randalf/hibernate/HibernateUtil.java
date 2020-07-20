@@ -10,8 +10,7 @@ import java.util.Hashtable;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -28,7 +27,7 @@ import mx.randalf.hibernate.exception.HibernateUtilException;
  * 
  */
 public class HibernateUtil {
-	private static final Logger log = LogManager.getLogger(HibernateUtil.class);
+	private static final Logger log = Logger.getLogger(HibernateUtil.class);
 
 	private Object SyncObj = new Object();
 

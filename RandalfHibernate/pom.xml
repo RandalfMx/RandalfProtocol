@@ -1,9 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>mx.randalf.hibernate</groupId>
 	<artifactId>RandalfHibernate</artifactId>
-	<version>3.0.0</version>
+	<version>3.0.1</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -18,7 +19,7 @@
 		<dependency>
 			<groupId>mx.randalf.configuration</groupId>
 			<artifactId>RandalfConfiguration</artifactId>
-			<version>2.0.0</version>
+			<version>3.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.transaction</groupId>
@@ -30,69 +31,47 @@
 			<artifactId>persistence-api</artifactId>
 			<version>1.0.2</version>
 		</dependency>
+		<!-- <dependency> <groupId>org.apache.logging.log4j</groupId> <artifactId>log4j-core</artifactId> 
+			<version>2.13.2</version> </dependency> <dependency> <groupId>org.apache.logging.log4j</groupId> 
+			<artifactId>log4j-jcl</artifactId> <version>2.13.2</version> </dependency> -->
 
-    <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-core</artifactId>
-        <version>2.13.2</version>
-    </dependency>
-    <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-jcl</artifactId>
-        <version>2.13.2</version>
-    </dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.5</version>
+		</dependency>
 
-    <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>1.7.5</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-core</artifactId>
-      <version>4.3.11.Final</version>
-    </dependency>
-
-<!--
-        <version>5.4.18.Final</version>
-           <exclusions>
-        <exclusion>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
-        </exclusion>
-    </exclusions>
-    <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-entitymanager</artifactId>
-        <version>4.3.11.Final</version>
-    </dependency>
- -->
-<!-- 
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-c3p0</artifactId>
-      <version>4.3.11.Final</version>
-    </dependency>
- -->
-<!-- 
-    <dependency>
-        <groupId>org.jboss.logging</groupId>
-        <artifactId>jboss-logging</artifactId>
-        <version>3.2.0.Final</version>
-    </dependency>
- -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>4.3.11.Final</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-ehcache -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-ehcache</artifactId>
+			<version>4.3.11.Final</version>
+		</dependency>
+		<!-- <version>5.4.18.Final</version> -->
+		<!-- <exclusions> <exclusion> <groupId>org.javassist</groupId> <artifactId>javassist</artifactId> 
+			</exclusion> </exclusions> <dependency> <groupId>org.hibernate</groupId> 
+			<artifactId>hibernate-entitymanager</artifactId> <version>4.3.11.Final</version> 
+			</dependency> -->
+		<!-- <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate-c3p0</artifactId> 
+			<version>4.3.11.Final</version> </dependency> -->
+		<!-- <dependency> <groupId>org.jboss.logging</groupId> <artifactId>jboss-logging</artifactId> 
+			<version>3.2.0.Final</version> </dependency> -->
 	</dependencies>
-  <distributionManagement>
-    <repository>
-        <id>mvn-bncf</id>
-        <name>Maven BNCF-releases</name>
-        <url>http://maven.bncf.firenze.sbn.it/artifactory/libs-release-local</url>
-    </repository>
-</distributionManagement>
-  <parent>
-  	<groupId>mx.randalf.protocol</groupId>
-  	<artifactId>RandalfProtocol</artifactId>
-  	<version>1.0.1</version>
-  </parent>
+	<distributionManagement>
+		<repository>
+			<id>mvn-bncf</id>
+			<name>Maven BNCF-releases</name>
+			<url>http://maven.bncf.firenze.sbn.it/artifactory/libs-release-local</url>
+		</repository>
+	</distributionManagement>
+	<parent>
+		<groupId>mx.randalf.protocol</groupId>
+		<artifactId>RandalfProtocol</artifactId>
+		<version>1.0.1</version>
+	</parent>
 </project>
