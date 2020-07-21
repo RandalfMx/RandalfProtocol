@@ -252,7 +252,7 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable> implements
 		return result;
 	}
 
-	private void postFind(List<T> result) {
+	protected void postFind(List<T> result) {
 	  if (result != null) {
 	    for (T t : result) {
 	      postFind(t);
