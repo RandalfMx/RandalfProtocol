@@ -10,8 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Vector;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.marc4j.MarcException;
 import org.marc4j.MarcReader;
 import org.marc4j.MarcStreamReader;
@@ -27,7 +26,7 @@ import mx.randalf.protocol.sbn.metadata.RandalfMetadata;
  */
 public class RandalfSbnClient {
 
-	private Logger log = LogManager.getLogger(RandalfSbnClient.class);
+	private Logger log = Logger.getLogger(RandalfSbnClient.class);
 
 	private String urlOpacSbn = "https://opac.sbn.it/opacsbn/opaclib";
 
