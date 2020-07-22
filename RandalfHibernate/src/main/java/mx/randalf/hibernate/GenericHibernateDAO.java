@@ -190,17 +190,25 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable> implements
 		this.clear = clear;
 	}
 
-	public List<T> findAll() throws HibernateException, HibernateUtilException {
-		return findAll(null);
+  public List<T> findAll() throws HibernateException, HibernateUtilException {
+    return findAll(null, "");
+  }
+
+	public List<T> findAll(String postFindType) throws HibernateException, HibernateUtilException {
+		return findAll(null, postFindType);
 	}
 
-	public List<T> findAll(List<Order> orders, int page, int pageSize) throws HibernateException, HibernateUtilException{
+  public List<T> findAll(List<Order> orders, int page, int pageSize) throws HibernateException, HibernateUtilException{
+    return findAll(orders, page, pageSize, "");
+  }
+
+	public List<T> findAll(List<Order> orders, int page, int pageSize, String postFindType) throws HibernateException, HibernateUtilException{
 		List<T> list = null;
 
 		try {
 			setPage(page);
 			setPageSize(pageSize);
-			list = findAll(orders);
+			list = findAll(orders, postFindType);
 		} catch (HibernateException e) {
 			throw e;
 		} catch (HibernateUtilException e) {
@@ -209,8 +217,12 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable> implements
 		return list;
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<T> findAll(List<Order> orders) throws HibernateException, HibernateUtilException {
+  public List<T> findAll(List<Order> orders) throws HibernateException, HibernateUtilException {
+    return findAll(orders, "");
+  }
+
+  @SuppressWarnings("unchecked")
+	public List<T> findAll(List<Order> orders, String postFindType) throws HibernateException, HibernateUtilException {
 
 		List<T> result = null;
 		Criteria crit = null;
@@ -228,7 +240,7 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable> implements
 				}
 				paging(crit);
 				result = crit.list();
-				postFind(result);
+				postFind(result, postFindType);
 				commitTransaction();
 			} catch (HibernateException ex) {
 				rollbackTransaction();
@@ -252,22 +264,25 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable> implements
 		return result;
 	}
 
-	protected void postFind(List<T> result) {
+	protected void postFind(List<T> result, String postFindType) {
 	  if (result != null) {
 	    for (T t : result) {
-	      postFind(t);
+	      postFind(t, postFindType);
 	    }
 	  }
   }
 
-  protected void postFind(T t) {
-  }
+  protected abstract void postFind(T t, String postFindType);
 
   protected void initTableJoin(Criteria crit) {
 	}
 
-	public T findById(ID id) throws HibernateException, HibernateUtilException {
-		return getById(id);
+  public T findById(ID id) throws HibernateException, HibernateUtilException {
+    return getById(id, "");
+  }
+
+	public T findById(ID id, String postFindType) throws HibernateException, HibernateUtilException {
+		return getById(id, postFindType);
 	}
 
 	protected void paging(Criteria crit) {
@@ -278,8 +293,11 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable> implements
 		}
 	}
 
+  public T getById(ID id) throws HibernateException, HibernateUtilException {
+     return getById(id, "");
+  }
 	@SuppressWarnings("unchecked")
-	public T getById(ID id) throws HibernateException, HibernateUtilException {
+	public T getById(ID id, String postFindType) throws HibernateException, HibernateUtilException {
 		T result = null;
 
 		try {
@@ -289,7 +307,9 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable> implements
 				crit.add(Restrictions.eq("id", id));
 				paging(crit);
 				result = (T) crit.uniqueResult();
-				postFind(result);
+				if (result != null) {
+				  postFind(result, postFindType);
+				}
 				commitTransaction();
 			} catch (HibernateException ex) {
 				rollbackTransaction();

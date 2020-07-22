@@ -12,13 +12,13 @@ public interface GenericDAO<T, ID> {
 
 	void delete(T entity) throws HibernateException, HibernateUtilException;
 
-	List<T> findAll() throws HibernateException, HibernateUtilException;
+	List<T> findAll(String postFindType) throws HibernateException, HibernateUtilException;
 
-	List<T> findAll(List<Order> orders) throws HibernateException, HibernateUtilException;
+	List<T> findAll(List<Order> orders, String postFindType) throws HibernateException, HibernateUtilException;
 
-	T findById(ID id) throws HibernateException, HibernateUtilException;
+	T findById(ID id, String postFindType) throws HibernateException, HibernateUtilException;
 
-	public T getById(ID id) throws HibernateException, HibernateUtilException;
+	public T getById(ID id, String postFindType) throws HibernateException, HibernateUtilException;
 
 	void save(T entity) throws HibernateException, HibernateUtilException;
 
