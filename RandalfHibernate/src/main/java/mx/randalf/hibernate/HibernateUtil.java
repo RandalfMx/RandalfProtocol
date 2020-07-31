@@ -38,9 +38,8 @@ public class HibernateUtil {
 
 	private static Hashtable<String, HibernateUtil> instance = null;
 
-	private HibernateUtil(String fileHibernate) throws HibernateException, HibernateUtilException
-	{
-	  ServiceRegistry serviceRegistry = null;
+	private HibernateUtil(String fileHibernate) throws HibernateException, HibernateUtilException {
+		ServiceRegistry serviceRegistry = null;
 		Hashtable<?, ?> lists = null;
 		Enumeration<?> keys = null;
 		Object key = null;
@@ -51,9 +50,9 @@ public class HibernateUtil {
 		if (!f.exists()) {
 			if (HibernateUtil.class.getResource("/" + f.getName()) != null) {
 				f = new File(HibernateUtil.class.getResource("/" + f.getName()).getFile());
-				if (!f.exists()){
+				if (!f.exists()) {
 					f = new File(f.getAbsolutePath().replace("%23", "#"));
-					if (!f.exists()){
+					if (!f.exists()) {
 						f = new File(f.getAbsolutePath().replace("%20", " "));
 					}
 				}
@@ -65,9 +64,9 @@ public class HibernateUtil {
 				conf = new org.hibernate.cfg.Configuration();
 				configuration = conf.configure(f);
 
-				serviceRegistry = new StandardServiceRegistryBuilder().applySettings(
-				    configuration.getProperties()).build();
-				
+				serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties())
+						.build();
+
 				sessionFactory = configuration.buildSessionFactory(serviceRegistry);
 //        sessionFactory = configuration.buildSessionFactory();
 			} catch (HibernateException e) {
@@ -81,7 +80,7 @@ public class HibernateUtil {
 					keys = lists.keys();
 					while (keys.hasMoreElements()) {
 						key = keys.nextElement();
-						log.debug("\n"+key + ": " + lists.get(key));
+						log.debug("\n" + key + ": " + lists.get(key));
 					}
 					if (mx.randalf.configuration.Configuration.getValue("dataSource") != null) {
 						sessionFactory = (SessionFactory) ctx
@@ -100,9 +99,25 @@ public class HibernateUtil {
 					throw new HibernateUtilException(e.getMessage(), e);
 				}
 				if (sessionFactory == null) {
-					sessionFactory = new Configuration().configure().buildSessionFactory();
+					conf = new Configuration();
+					configuration = conf.configure();
+
+					serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties())
+							.build();
+
+					sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+
+//					sessionFactory = new Configuration().configure().buildSessionFactory();
 					if (sessionFactory == null) {
-						sessionFactory = new Configuration().configure(f).buildSessionFactory();
+						conf = new Configuration();
+						configuration = conf.configure(f);
+
+						serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties())
+								.build();
+
+						sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+
+//						sessionFactory = new Configuration().configure(f).buildSessionFactory();
 					}
 				}
 			}
@@ -233,10 +248,10 @@ public class HibernateUtil {
 			session = sessionTable.get();
 			if (session != null) {
 
-				if (session.isConnected()){
+				if (session.isConnected()) {
 					session.disconnect();
 				}
-				if (session.isOpen()){
+				if (session.isOpen()) {
 					session.close();
 				}
 				sessionTable.remove();
@@ -254,8 +269,7 @@ public class HibernateUtil {
 		return count;
 	}
 
-	public static HibernateUtil getInstance(String fileHibernate) throws HibernateException, HibernateUtilException
-	{
+	public static HibernateUtil getInstance(String fileHibernate) throws HibernateException, HibernateUtilException {
 		try {
 			if (instance == null) {
 				instance = new Hashtable<String, HibernateUtil>();
@@ -275,7 +289,9 @@ public class HibernateUtil {
 		return sessionFactory;
 	}
 
-  public static void shutdown()
-  {
-     getSessionFactory().close();
-  }}
+	public static void shutdown() {
+		if (getSessionFactory() != null) {
+			getSessionFactory().close();
+		}
+	}
+}

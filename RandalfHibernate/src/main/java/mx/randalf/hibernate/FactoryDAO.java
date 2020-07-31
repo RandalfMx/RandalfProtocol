@@ -11,7 +11,6 @@ import javax.naming.NamingException;
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
-import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
 import org.hibernate.MappingException;
 import org.hibernate.Session;
@@ -230,9 +229,9 @@ public class FactoryDAO {
 
 		gc = new GregorianCalendar();
 		st = date.split("/");
-		gc.set(Calendar.DAY_OF_MONTH, new Integer(st[0]));
-		gc.set(Calendar.MONTH, new Integer(st[1]) - 1);
-		gc.set(Calendar.YEAR, new Integer(st[2]));
+		gc.set(Calendar.DAY_OF_MONTH, Integer.valueOf(st[0])); // new Integer(st[0]));
+		gc.set(Calendar.MONTH, Integer.valueOf(st[1]) -1); // new Integer(st[1]) - 1);
+		gc.set(Calendar.YEAR, Integer.valueOf(st[2])); // new Integer(st[2]));
 		return new java.sql.Date(gc.getTimeInMillis());
 	}
 
@@ -243,9 +242,9 @@ public class FactoryDAO {
 
 		gc = new GregorianCalendar();
 		st = date.split("/");
-		gc.set(Calendar.DAY_OF_MONTH, new Integer(st[0]));
-		gc.set(Calendar.MONTH, new Integer(st[1]) - 1);
-		gc.set(Calendar.YEAR, new Integer(st[2]));
+		gc.set(Calendar.DAY_OF_MONTH, Integer.valueOf(st[0])); // new Integer(st[0]));
+		gc.set(Calendar.MONTH, Integer.valueOf(st[1]) -1); // new Integer(st[1]) - 1);
+		gc.set(Calendar.YEAR, Integer.valueOf(st[2])); // new Integer(st[2]));
 		return new java.sql.Timestamp(gc.getTimeInMillis());
 	}
 
