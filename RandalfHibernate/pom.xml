@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>mx.randalf.hibernate</groupId>
 	<artifactId>RandalfHibernate</artifactId>
-	<version>3.0.5</version>
+	<version>3.0.6</version>
 	<dependencies>
 		<dependency>
 			<groupId>commons-codec</groupId>
@@ -14,7 +14,7 @@
 		<dependency>
 			<groupId>mx.randalf.configuration</groupId>
 			<artifactId>RandalfConfiguration</artifactId>
-			<version>3.0.1</version>
+			<version>3.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.transaction</groupId>
@@ -37,6 +37,12 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<version>4.3.11.Final</version>
+      <exclusions>
+        <exclusion>
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
+        </exclusion>
+      </exclusions>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-ehcache -->
 		<dependency>

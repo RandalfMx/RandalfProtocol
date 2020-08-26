@@ -26,7 +26,7 @@ import mx.randalf.hibernate.exception.HibernateUtilException;
  * @author massi
  * 
  */
-public abstract class GenericHibernateDAO<T, ID extends Serializable> implements GenericDAO<T, ID> {
+public abstract class GenericHibernateDAO<T extends Serializable, ID extends Serializable> implements GenericDAO<T, ID> {
 
 	private static final Logger log = Logger.getLogger(GenericHibernateDAO.class);
 
@@ -296,7 +296,8 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable> implements
   public T getById(ID id) throws HibernateException, HibernateUtilException {
      return getById(id, "");
   }
-	@SuppressWarnings("unchecked")
+
+  @SuppressWarnings("unchecked")
 	public T getById(ID id, String postFindType) throws HibernateException, HibernateUtilException {
 		T result = null;
 
