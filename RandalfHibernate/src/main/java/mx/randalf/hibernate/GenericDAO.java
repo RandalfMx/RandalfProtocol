@@ -14,7 +14,7 @@ public interface GenericDAO<T, ID> {
 
 	List<T> findAll(String postFindType) throws HibernateException, HibernateUtilException;
 
-	List<T> findAll(List<Order> orders, String postFindType) throws HibernateException, HibernateUtilException;
+	List<T> findAll(List<Order> orders, String postFindType, boolean initJoin) throws HibernateException, HibernateUtilException;
 
 	T findById(ID id) throws HibernateException, HibernateUtilException;
 

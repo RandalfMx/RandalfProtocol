@@ -190,6 +190,10 @@ public abstract class GenericHibernateDAO<T extends Serializable, ID extends Ser
 		this.clear = clear;
 	}
 
+	  public List<T> findAll(boolean initJoin) throws HibernateException, HibernateUtilException {
+	    return findAll(null, "", initJoin);
+	  }
+
   public List<T> findAll() throws HibernateException, HibernateUtilException {
     return findAll(null, "");
   }
@@ -221,8 +225,11 @@ public abstract class GenericHibernateDAO<T extends Serializable, ID extends Ser
     return findAll(orders, "");
   }
 
-  @SuppressWarnings("unchecked")
 	public List<T> findAll(List<Order> orders, String postFindType) throws HibernateException, HibernateUtilException {
+		return findAll(orders, postFindType, true);
+	}
+  @SuppressWarnings("unchecked")
+	public List<T> findAll(List<Order> orders, String postFindType, boolean initJoin) throws HibernateException, HibernateUtilException {
 
 		List<T> result = null;
 		Criteria crit = null;
@@ -232,7 +239,9 @@ public abstract class GenericHibernateDAO<T extends Serializable, ID extends Ser
 
 				beginTransaction();
 				crit = createCriteria();
-				initTableJoin(crit);
+				if (initJoin) {
+					initTableJoin(crit);
+				}
 				if (orders != null) {
 					for (Order order : orders) {
 						crit.addOrder(order);
