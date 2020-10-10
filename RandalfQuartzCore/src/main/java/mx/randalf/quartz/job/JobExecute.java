@@ -6,8 +6,7 @@ package mx.randalf.quartz.job;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -22,7 +21,7 @@ import mx.randalf.quartz.QuartzTools;
  */
 public abstract class JobExecute implements Job {
 
-	private Logger log = LogManager.getLogger(JobExecute.class);
+	private Logger log = Logger.getLogger(JobExecute.class);
 
 	private Vector<JobKey> listJobs = null;
 

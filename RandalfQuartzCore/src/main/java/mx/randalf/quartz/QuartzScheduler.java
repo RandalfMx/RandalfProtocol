@@ -49,7 +49,7 @@ public abstract class QuartzScheduler extends QuartzMaster {
 				result.put("startScheduler",true);
 			} else if (args[x].equals("-P")){
 				x++;
-				result.put("socketPort",new Integer(args[x]));
+				result.put("socketPort",Integer.valueOf(args[x]));
 			} else if (args[x].equals("-S")){
 				result.put("closeSocket",true);
 			} else if (args[x].equals("-v")){

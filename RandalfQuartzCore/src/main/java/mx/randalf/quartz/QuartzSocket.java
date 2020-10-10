@@ -3,8 +3,7 @@
  */
 package mx.randalf.quartz;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.quartz.SchedulerException;
 
 import mx.randalf.socket.client.Client;
@@ -19,7 +18,7 @@ import mx.randalf.socket.server.exception.ServerException;
  */
 public class QuartzSocket extends Thread {
 
-	private Logger log = LogManager.getLogger(QuartzSocket.class);
+	private Logger log = Logger.getLogger(QuartzSocket.class);
 
 	private int port = 0;
 	private QuartzMaster scheduler = null;

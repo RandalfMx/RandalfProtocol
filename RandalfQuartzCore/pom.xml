@@ -4,8 +4,8 @@
   <artifactId>RandalfQuartzCore</artifactId>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.9</maven.compiler.source>
+		<maven.compiler.target>1.9</maven.compiler.target>
 	</properties>
 	<repositories>
 		<repository>
@@ -47,20 +47,22 @@
 			<artifactId>quartz</artifactId>
 			<version>2.3.2</version>
 		</dependency>
-		<dependency>
-			<groupId>xml-apis</groupId>
-			<artifactId>xml-apis</artifactId>
-			<version>1.4.01</version>
-		</dependency>
+		<!-- 
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+      <version>1.4.01</version>
+    </dependency>
+		 -->
 		<dependency>
 			<groupId>mx.randalf.configuration</groupId>
 			<artifactId>RandalfConfiguration</artifactId>
-			<version>2.0.0</version>
+			<version>3.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>mx.randalf.socket</groupId>
 			<artifactId>RandalfSocket</artifactId>
-			<version>2.0.0</version>
+			<version>3.0.0</version>
 		</dependency>
 	</dependencies>
 	<parent>
@@ -68,5 +70,5 @@
 		<artifactId>RandalfProtocol</artifactId>
 		<version>1.0.1</version>
 	</parent>
-	<version>2.0.1</version>
+	<version>3.0.0</version>
 </project>
