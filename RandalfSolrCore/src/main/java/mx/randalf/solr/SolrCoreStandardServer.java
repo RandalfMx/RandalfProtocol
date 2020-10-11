@@ -4,8 +4,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.net.MalformedURLException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.ResponseParser;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -20,7 +19,7 @@ import mx.randalf.solr.exception.SolrException;
 
 public class SolrCoreStandardServer extends SolrCoreServer<HttpSolrClient>{
 
-	private Logger log = LogManager.getLogger(SolrCoreStandardServer.class);
+	private Logger log = Logger.getLogger(SolrCoreStandardServer.class);
 
 	/**
 	 * Timeout di connessione in Millisecondi

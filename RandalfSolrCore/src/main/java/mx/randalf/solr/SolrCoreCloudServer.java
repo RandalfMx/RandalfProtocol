@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.ResponseParser;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -25,7 +24,7 @@ public class SolrCoreCloudServer extends SolrCoreServer<CloudSolrClient>{
 	/**
 	 * Variabile utilizzata per loggare l'applicazione
 	 */
-	private Logger log = LogManager.getLogger(SolrCoreCloudServer.class);
+	private Logger log = Logger.getLogger(SolrCoreCloudServer.class);
 
 	/**
 	 * Timeout di connessione in Millisecondi

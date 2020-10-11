@@ -8,8 +8,7 @@ import java.io.Writer;
 import java.util.UUID;
 import java.util.Vector;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
@@ -30,7 +29,7 @@ import mx.randalf.solr.exception.SolrException;
  */
 public abstract class JTools extends JobExecute{
 
-	private static Logger log = LogManager.getLogger(JTools.class);
+	private static Logger log = Logger.getLogger(JTools.class);
 
 	protected Params params = null;
 

@@ -10,8 +10,7 @@ import java.util.Vector;
 
 import mx.randalf.solr.exception.SolrException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.SortClause;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -29,7 +28,7 @@ public class FindDocument extends SolrCore {
 	/**
 	 * Questa variabile viene utilizzata per loggare l'applicazione
 	 */
-	private Logger log = LogManager.getLogger(FindDocument.class);
+	private Logger log = Logger.getLogger(FindDocument.class);
 
 	/**
 	 * Variabile utilizzata per indicare se utilizzare la gestione delle faccette

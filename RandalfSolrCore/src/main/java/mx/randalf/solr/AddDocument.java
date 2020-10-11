@@ -12,8 +12,7 @@ import java.util.Vector;
 
 import mx.randalf.solr.exception.SolrException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.request.AbstractUpdateRequest.ACTION;
 import org.apache.solr.client.solrj.request.UpdateRequest;
@@ -29,7 +28,7 @@ import org.apache.solr.common.SolrInputDocument;
  */
 public abstract class AddDocument extends FindDocument {
 
-	private Logger log = LogManager.getLogger(AddDocument.class);
+	private Logger log = Logger.getLogger(AddDocument.class);
 
 	protected UpdateRequest request;
 

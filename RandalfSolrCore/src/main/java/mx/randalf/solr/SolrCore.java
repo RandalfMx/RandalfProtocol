@@ -8,8 +8,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.Vector;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.request.AbstractUpdateRequest.ACTION;
 import org.apache.solr.client.solrj.request.UpdateRequest;
@@ -39,7 +38,7 @@ class SolrCore {
 	/**
 	 * Variabile utilizzata per loggare l'applicazione
 	 */
-	private Logger log = LogManager.getLogger(SolrCore.class);
+	private Logger log = Logger.getLogger(SolrCore.class);
 
 	private String id= null;
 
