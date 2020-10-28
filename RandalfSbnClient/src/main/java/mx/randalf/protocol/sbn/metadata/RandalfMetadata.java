@@ -11,6 +11,7 @@ import org.marc4j.marc.ControlField;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
+import org.marc4j.marc.VariableField;
 
 /**
  * @author massi
@@ -55,6 +56,8 @@ public class RandalfMetadata {
 
 	private List<String> rights = null;
 
+	private List<String> urls = null;
+	
 	/**
 	 * 
 	 */
@@ -80,10 +83,45 @@ public class RandalfMetadata {
 		checkRelation(record);
 		checkCoverage(record);
 		checkRights(record);
+		checkUrls(record);
+	}
+
+	private void checkUrls(Record record) {
+		List<VariableField> dataFields = null;
+		Iterator<VariableField> i = null;
+		DataField dataField = null;
+		List<Subfield> subfields = null;
+
+		dataFields = record.getVariableFields("856");
+		i = dataFields.iterator();
+		while (i.hasNext()) {
+			dataField = (DataField) i.next();
+			subfields = dataField.getSubfields("u");
+			if (subfields != null) {
+				for (Subfield subfield : subfields) {
+					if (subfield.getData() != null) {
+						if (urls == null) {
+							urls = new Vector<String>();
+						}
+						urls.add(subfield.getData());
+					}
+				}
+			}
+			subfields = dataField.getSubfields("2");
+			if (subfields != null) {
+				for (Subfield subfield : subfields) {
+					if (subfield.getData() != null) {
+						if (urls == null) {
+							urls = new Vector<String>();
+						}
+						urls.add(subfield.getData());
+					}
+				}
+			}
+		}
 	}
 
 	private void checkLevel(Record record) {
-		// TODO Auto-generated method stub
 		switch (record.getLeader().getImplDefined1()[0]) {
 		case 'a':
 			level="a";
@@ -109,9 +147,9 @@ public class RandalfMetadata {
 	}
 
 	private void checkRights(Record record) {
-		List dataFields = null;
+		List<VariableField> dataFields = null;
 		DataField dataField = null;
-		Iterator i = null;
+		Iterator<VariableField> i = null;
 		List<Subfield> subfields = null;
 		String testo = null;
 
@@ -161,9 +199,9 @@ public class RandalfMetadata {
 	}
 
 	private void checkCoverage(Record record) {
-		List dataFields = null;
+		List<VariableField> dataFields = null;
 		DataField dataField = null;
-		Iterator i = null;
+		Iterator<VariableField> i = null;
 		List<Subfield> subfields = null;
 		String testo = null;
 
@@ -277,9 +315,9 @@ public class RandalfMetadata {
 	}
 
 	private void checkRelation(Record record) {
-		List dataFields = null;
+		List<VariableField> dataFields = null;
 		DataField dataField = null;
-		Iterator i = null;
+		Iterator<VariableField> i = null;
 		List<Subfield> subfields = null;
 		String testo = null;
 
@@ -361,9 +399,9 @@ public class RandalfMetadata {
 	}
 
 	private void checkLanguage(Record record) {
-		List dataFields = null;
+		List<VariableField> dataFields = null;
 		DataField dataField = null;
-		Iterator i = null;
+		Iterator<VariableField> i = null;
 		List<Subfield> subfields = null;
 		String testo = null;
 
@@ -390,9 +428,9 @@ public class RandalfMetadata {
 	}
 
 	private void checkSource(Record record) {
-		List dataFields = null;
+		List<VariableField> dataFields = null;
 		DataField dataField = null;
-		Iterator i = null;
+		Iterator<VariableField> i = null;
 		List<Subfield> subfields = null;
 		String testo = null;
 
@@ -442,9 +480,9 @@ public class RandalfMetadata {
 	}
 
 	private void checkIdentifier(Record record) {
-		List dataFields = null;
+		List<VariableField> dataFields = null;
 		DataField dataField = null;
-		Iterator i = null;
+		Iterator<VariableField> i = null;
 		List<Subfield> subfields = null;
 		String testo = null;
 		String[] st = null;
@@ -636,9 +674,9 @@ public class RandalfMetadata {
 	}
 
 	private void checkFormat(Record record) {
-		List dataFields = null;
+		List<VariableField> dataFields = null;
 		DataField dataField = null;
-		Iterator i = null;
+		Iterator<VariableField> i = null;
 		List<Subfield> subfields = null;
 		String testo = null;
 
@@ -688,7 +726,7 @@ public class RandalfMetadata {
 	private void checkType(Record record) {
 		String testo = null;
 
-		typeId= new Character(record.getLeader().getTypeOfRecord()).toString();
+		typeId= Character.valueOf(record.getLeader().getTypeOfRecord()).toString();
 		switch (record.getLeader().getTypeOfRecord()) {
 		case 'a':
 			testo = "testo a stampa";
@@ -739,9 +777,9 @@ public class RandalfMetadata {
 	}
 
 	private void checkDate(Record record) {
-		List dataFields = null;
+		List<VariableField> dataFields = null;
 		DataField dataField = null;
-		Iterator i = null;
+		Iterator<VariableField> i = null;
 		List<Subfield> subfields = null;
 		String testo = null;
 		boolean bData = false;
@@ -812,9 +850,9 @@ public class RandalfMetadata {
 	}
 
 	private void checkContributor(Record record) {
-		List dataFields = null;
+		List<VariableField> dataFields = null;
 		DataField dataField = null;
-		Iterator i = null;
+		Iterator<VariableField> i = null;
 		List<Subfield> subfields = null;
 		String testo = null;
 
@@ -897,9 +935,9 @@ public class RandalfMetadata {
 	}
 
 	private void checkPublisher(Record record) {
-		List dataFields = null;
+		List<VariableField> dataFields = null;
 		DataField dataField = null;
-		Iterator i = null;
+		Iterator<VariableField> i = null;
 		List<Subfield> subfields = null;
 		String testo = null;
 
@@ -969,9 +1007,9 @@ public class RandalfMetadata {
 	}
 
 	private void checkDescription(Record record, String idIstituto) {
-		List dataFields = null;
+		List<VariableField> dataFields = null;
 		DataField dataField = null;
-		Iterator i = null;
+		Iterator<VariableField> i = null;
 		List<Subfield> subfields = null;
 		String testo = null;
 		String testo2 = null;
@@ -1060,9 +1098,9 @@ public class RandalfMetadata {
 	}
 
 	private void checkSubject(Record record) {
-		List dataFields = null;
+		List<VariableField> dataFields = null;
 		DataField dataField = null;
-		Iterator i = null;
+		Iterator<VariableField> i = null;
 		List<Subfield> subfields = null;
 		String testo = null;
 
@@ -1200,9 +1238,9 @@ public class RandalfMetadata {
 	}
 
 	private void checkCreator(Record record) {
-		List dataFields = null;
+		List<VariableField> dataFields = null;
 		DataField dataField = null;
-		Iterator i = null;
+		Iterator<VariableField> i = null;
 		List<Subfield> subfields = null;
 		String testo = null;
 
@@ -1377,9 +1415,9 @@ public class RandalfMetadata {
 	}
 
 	private void checkTitle(Record record) {
-		List dataFields = null;
+		List<VariableField> dataFields = null;
 		DataField dataField = null;
-		Iterator i = null;
+		Iterator<VariableField> i = null;
 		List<Subfield> subfields = null;
 		String title = "";
 
@@ -1547,5 +1585,9 @@ public class RandalfMetadata {
 
 	public String getLevelDesc() {
 		return levelDesc;
+	}
+
+	public List<String> getUrls() {
+		return urls;
 	}
 }

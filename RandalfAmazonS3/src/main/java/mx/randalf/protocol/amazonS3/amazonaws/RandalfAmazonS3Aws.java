@@ -207,7 +207,7 @@ public class RandalfAmazonS3Aws extends IRandalfAmazonS3<AmazonS3> {
 	}
 
 	@Override
-	protected InputStream getFile(AmazonS3 storage, String bucketName, String fileInput, Integer start, Integer end) throws RandalfAmazonS3Exception {
+	protected InputStream getFile(AmazonS3 storage, String bucketName, String fileInput, Long start, Long end) throws RandalfAmazonS3Exception {
 		GetObjectRequest rangeObjectRequest = null;
 		S3Object s3Object = null;
 		InputStream objectData = null;

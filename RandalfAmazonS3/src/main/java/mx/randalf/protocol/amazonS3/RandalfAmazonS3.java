@@ -71,7 +71,7 @@ public class RandalfAmazonS3 {
 		return storage.getFile(bucketName, fileInput);
 	}
 	
-	public  InputStream getFile(String bucketName, String fileInput, Integer start, Integer end) throws RandalfAmazonS3Exception{
+	public  InputStream getFile(String bucketName, String fileInput, Long start, Long end) throws RandalfAmazonS3Exception{
 		return storage.getFile(bucketName, fileInput, start, end);
 	}
 	

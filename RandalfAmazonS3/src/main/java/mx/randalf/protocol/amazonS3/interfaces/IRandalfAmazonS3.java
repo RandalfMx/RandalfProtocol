@@ -88,7 +88,7 @@ public abstract class IRandalfAmazonS3<S> {
 	 * @return
 	 * @throws RandalfAmazonS3Exception
 	 */
-	public InputStream getFile(String bucketName, String fileInput, Integer start, Integer end) throws RandalfAmazonS3Exception{
+	public InputStream getFile(String bucketName, String fileInput, Long start, Long end) throws RandalfAmazonS3Exception{
 		S storage = null;
 
 		try {
@@ -148,7 +148,7 @@ public abstract class IRandalfAmazonS3<S> {
 	
 	protected abstract S3Object readInfo(S storage, String bucketName, String fileInput);
 
-	protected abstract InputStream getFile(S storage, String bucketName, String fileInput, Integer start, Integer end)  throws RandalfAmazonS3Exception;
+	protected abstract InputStream getFile(S storage, String bucketName, String fileInput, Long start, Long end)  throws RandalfAmazonS3Exception;
 
 	protected abstract boolean sendFile(S storage, File fileInput, String contentType, String md5Base64,
 			String md5, String bucketName, String fileOutput) throws RandalfAmazonS3Exception;

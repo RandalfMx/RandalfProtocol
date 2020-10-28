@@ -102,7 +102,7 @@ public class QuartzTools {
 							.withPriority(priority)
 							.startNow()
 							.withSchedule(SimpleScheduleBuilder.simpleSchedule()
-							        .withRepeatCount(300)
+							        .withRepeatCount(0)
 							        .withIntervalInMinutes(2))
 							.build();
 				} else {
@@ -110,7 +110,7 @@ public class QuartzTools {
 							.withIdentity(triggerName, triggerGroup)
 							.startNow()
 							.withSchedule(SimpleScheduleBuilder.simpleSchedule()
-							        .withRepeatCount(1000)
+							        .withRepeatCount(0)
 							        .withIntervalInSeconds(2))
 							.build();
 				}

@@ -181,7 +181,7 @@ public class RandalfAmazonS3Minio extends IRandalfAmazonS3<MinioClient> {
 	}
 
 	@Override
-	protected InputStream getFile(MinioClient storage, String bucketName, String fileInput, Integer start, Integer end)
+	protected InputStream getFile(MinioClient storage, String bucketName, String fileInput, Long start, Long end)
 			throws RandalfAmazonS3Exception {
 		// TODO Auto-generated method stub
 		return null;
