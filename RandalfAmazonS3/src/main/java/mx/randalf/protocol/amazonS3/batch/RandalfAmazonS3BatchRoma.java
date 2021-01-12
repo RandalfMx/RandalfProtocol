@@ -1,7 +1,7 @@
 /**
  * 
  */
-package mx.randalf.protocol.amazonS3.test;
+package mx.randalf.protocol.amazonS3.batch;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,28 +11,32 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 
+import com.amazonaws.SDKGlobalConfiguration;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.model.S3Object;
 
 import mx.randalf.protocol.amazonS3.RandalfAmazonS3;
+import mx.randalf.protocol.amazonS3.amazonaws.RandalfAmazonS3Aws;
 import mx.randalf.protocol.amazonS3.exception.RandalfAmazonS3Exception;
 
 /**
  * @author massi
  *
  */
-public class RandalfAmazonS3StorageRomaTest {
+public class RandalfAmazonS3BatchRoma {
 
-	private RandalfAmazonS3 randalfAmazonS3 = null;
+	private RandalfAmazonS3Aws randalfAmazonS3 = null;
 
 	private String bucketName = "Storage";
 
 	/**
 	 * 
 	 */
-	public RandalfAmazonS3StorageRomaTest() {
-	
-		randalfAmazonS3 = new RandalfAmazonS3("https://cs2.cloudspc.it:8079", Regions.US_EAST_1, "465ffb75913244be96a292672ba7850c",
+	public RandalfAmazonS3BatchRoma() {
+		System.setProperty(SDKGlobalConfiguration.DISABLE_CERT_CHECKING_SYSTEM_PROPERTY, "true");
+
+		randalfAmazonS3 = new RandalfAmazonS3Aws("https://cs2.cloudspc.it:8079", 
+				Regions.US_EAST_1, "465ffb75913244be96a292672ba7850c",
 				"5662f5554926477584a0c0b6998fdec2");
 				
 	}
@@ -43,9 +47,9 @@ public class RandalfAmazonS3StorageRomaTest {
 	public static void main(String[] args) {
 		SimpleDateFormat fmt = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
 		System.out.println(fmt.format(new GregorianCalendar().getTime()));
-		RandalfAmazonS3StorageRomaTest randalfAmazonS3StorageRomaTest = null;
+		RandalfAmazonS3BatchRoma randalfAmazonS3StorageRomaTest = null;
 		
-		randalfAmazonS3StorageRomaTest = new RandalfAmazonS3StorageRomaTest();
+		randalfAmazonS3StorageRomaTest = new RandalfAmazonS3BatchRoma();
 		if (args[0].equals("PUT")){
 			randalfAmazonS3StorageRomaTest.sendFile(args[1], args[2], args[3]);
 		} else if (args[0].equals("GET")){
@@ -70,7 +74,7 @@ public class RandalfAmazonS3StorageRomaTest {
 
 	public void sendFile(String fileInput, String contentType, String fileOutput) {
 		try {
-			if (randalfAmazonS3.sendFile(new File(fileInput), contentType, bucketName, fileOutput)){
+			if (randalfAmazonS3.sendFile(new File(fileInput), null, bucketName, fileOutput)){
 				System.out.println("Il file ["+fileInput+"] è stato inviato");
 			} else {
 				System.out.println("Il file ["+fileInput+"] FALLITO");
