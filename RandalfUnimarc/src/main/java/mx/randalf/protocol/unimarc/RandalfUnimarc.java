@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Hashtable;
@@ -27,7 +28,7 @@ import org.marc4j.marc.Record;
  * @author massi
  *
  */
-abstract class RandalfUnimarc <D> {
+public abstract class RandalfUnimarc <D> {
 
 	private boolean prermissiveReader = false;
 
@@ -66,6 +67,7 @@ abstract class RandalfUnimarc <D> {
 		Record record = null;
 		List<ControlField> controlFields = null;
 		Hashtable<String, Record> result = null;
+		String bid = "";
 
 		try {
 			marcReaderConfig = new MarcReaderConfig();
@@ -79,7 +81,11 @@ abstract class RandalfUnimarc <D> {
 					if (result == null) {
 						result = new Hashtable<String, Record>();
 					}
-					result.put(controlFields.get(0).getData(), record);
+					bid = controlFields.get(0).getData();
+					if (bid.startsWith("IT\\ICCU\\")) {
+						bid = bid.substring(8).replace("\\", "");
+					}
+					result.put(bid, record);
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 				}
@@ -88,6 +94,46 @@ abstract class RandalfUnimarc <D> {
 			throw e;
 		}
 		return result;
+	}
+
+	public void convertXml(File fMrc, File fXml) throws IOException {
+		FileInputStream fis = null;
+		MarcReaderConfig marcReaderConfig = null;
+		MarcReader marcReader = null;
+		MarcXmlWriter marcXmlWriter = null;
+		Record record = null;
+		FileOutputStream fos = null;
+
+		try {
+			fis = new FileInputStream(fMrc);
+
+			marcReaderConfig = new MarcReaderConfig();
+			marcReaderConfig.setPermissiveReader(prermissiveReader);
+			marcReaderConfig.setToUtf8(toUtf8);
+			marcReader = MarcReaderFactory.makeReader(marcReaderConfig, fis);
+
+			fos = new FileOutputStream(fXml);
+			marcXmlWriter = new MarcXmlWriter(fos, "UTF-8");
+			while(marcReader.hasNext()){
+				record = marcReader.next();
+				marcXmlWriter.write(record);
+			}
+		} catch (FileNotFoundException e) {
+			throw e;
+		} catch (IOException e) {
+			throw e;
+		} finally {
+			if (marcXmlWriter != null) {
+				marcXmlWriter.close();
+			}
+			if (fos != null) {
+				fos.flush();
+				fos.close();
+			}
+			if (fis != null) {
+				fis.close();
+			}
+		}
 	}
 
 	public Hashtable<String, String> toXml(File fMrc) throws IOException {
@@ -114,17 +160,26 @@ abstract class RandalfUnimarc <D> {
 		return result;
 	}
 
-	public D get(String xmlMrc) {
+	public static Record getRecord(String xmlMrc) {
 		MarcXmlReader mxr = null;
 		ByteArrayInputStream bais = null;
 		Record record = null;
-		D bib = null;
 		
 		bais = new ByteArrayInputStream(xmlMrc.getBytes());
 		mxr = new MarcXmlReader(bais);
 		record = mxr.next();
 		
-		bib = init(record, null);
+		return record;
+	}
+
+	public D get(String xmlMrc) {
+		return get(getRecord(xmlMrc));
+	}
+
+	public D get(Record record) {
+		D bib = null;
+		
+		bib = init(record);
 		return bib;
 	}
 
@@ -136,7 +191,7 @@ abstract class RandalfUnimarc <D> {
 		try {
 			records = init(fMrc);
 			for (String key : records.keySet()) {
-				rec = init(records.get(key), key);
+				rec = init(records.get(key));
 				if (result == null) {
 					result = new Hashtable<String, D>();
 				}
@@ -148,7 +203,7 @@ abstract class RandalfUnimarc <D> {
 		return result;
 	}
 
-	protected abstract D init(Record record, String key);
+	protected abstract D init(Record record);
 
 	protected List<DataField> getDF(List<DataField> dataFields, String key) {
 		List<DataField> result = null;

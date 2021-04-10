@@ -33,7 +33,7 @@ public class RandalfUnimarcDC extends RandalfUnimarc<Bib> {
 		magXsd = new MagXsd(null);
 	}
 
-	protected Bib init(Record record, String key) {
+	protected Bib init(Record record) {
 		Bib bib = null;
 		Collection<? extends SimpleLiteral> value = null;
 
@@ -41,8 +41,8 @@ public class RandalfUnimarcDC extends RandalfUnimarc<Bib> {
 
 		bib = new Bib();
 		System.out.println("------------------");
-		System.out.println("Bid: " + key);
-		bib.getIdentifier().add(magXsd.genSimpleLiteral(key));
+		System.out.println("Bid: " + getCF(record.getControlFields(), "001").get(0).getData());
+		bib.getIdentifier().add(magXsd.genSimpleLiteral(getCF(record.getControlFields(), "001").get(0).getData()));
 
 		value = getTitle(record);
 		if (value != null) {

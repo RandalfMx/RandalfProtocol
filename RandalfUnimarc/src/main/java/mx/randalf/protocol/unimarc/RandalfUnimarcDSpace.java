@@ -30,7 +30,7 @@ public class RandalfUnimarcDSpace extends RandalfUnimarc<Dublin_core> {
 	}
 
 	@Override
-	protected Dublin_core init(Record record, String key) {
+	protected Dublin_core init(Record record) {
 		Dublin_core dublin_core = null;
 		Collection<? extends Dcvalue> value = null;
 		qualificato = false;
