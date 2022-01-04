@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>mx.randalf.protocol</groupId>
   <artifactId>RandalfProtocol</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3</version><!-- 1.0.2 17/12/2021 -->
   <packaging>pom</packaging>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,12 +21,13 @@
     <module>RandalfGoogleXls</module>
     <module>RandalfSbnClient</module>
   </modules>
+<!-- 
     <distributionManagement>
     <repository>
         <id>mvn-bncf</id>
         <name>Maven BNCF-releases</name>
         <url>http://maven.bncf.firenze.sbn.it/artifactory/libs-release-local</url>
     </repository>
-</distributionManagement>
-
+	</distributionManagement>
+-->
 </project>
